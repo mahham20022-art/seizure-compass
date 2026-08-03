@@ -31,7 +31,6 @@ class NavCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.s4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 48,
@@ -58,18 +57,21 @@ class NavCard extends StatelessWidget {
             subtitle,
             style: const TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.3),
           ),
-          const SizedBox(height: AppSpacing.s3),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.14),
-                shape: BoxShape.circle,
-                border: Border.all(color: accent.withValues(alpha: 0.4)),
+          // Always pins the "go" chevron to the card's bottom-right corner,
+          // regardless of how many lines the title/subtitle wrap to.
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.14),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: accent.withValues(alpha: 0.4)),
+                ),
+                child: Icon(Icons.chevron_right_rounded, color: accent, size: 20),
               ),
-              child: Icon(Icons.chevron_right_rounded, color: accent, size: 20),
             ),
           ),
         ],
