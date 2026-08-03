@@ -64,20 +64,30 @@ class _AssessmentWizardScreenState extends State<AssessmentWizardScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _controller,
-      child: WizardScaffold(
-        step: _step,
-        totalSteps: 5,
-        stepLabel: _titles[_step]!,
-        onBack: _back,
-        onNext: _next,
-        nextLabel: _step == 5 ? 'See results' : 'Continue',
-        child: switch (_step) {
-          1 => const Step1Patient(),
-          2 => const Step2Aura(),
-          3 => const Step3Semiology(),
-          4 => const Step4Postictal(),
-          _ => const Step5Investigations(),
+      child: PopScope(
+        // Steps 2-5 are just internal state, not separate routes, so the
+        // system/browser back gesture must step back one section instead
+        // of leaving the wizard entirely.
+        canPop: _step == 1,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          _back();
         },
+        child: WizardScaffold(
+          step: _step,
+          totalSteps: 5,
+          stepLabel: _titles[_step]!,
+          onBack: _back,
+          onNext: _next,
+          nextLabel: _step == 5 ? 'See results' : 'Continue',
+          child: switch (_step) {
+            1 => const Step1Patient(),
+            2 => const Step2Aura(),
+            3 => const Step3Semiology(),
+            4 => const Step4Postictal(),
+            _ => const Step5Investigations(),
+          },
+        ),
       ),
     );
   }
