@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_radii.dart';
 
-/// Material 3 dark theme tuned to match the Najm ICUCalc "monitor-blue"
-/// design language: deep ink backgrounds, cyan brand accents, calm rounded
-/// cards.
+/// Seizure Compass's own Material 3 dark theme: rich charcoal backgrounds,
+/// deep violet / electric purple / neon magenta brand accents, calm rounded
+/// cards — a deliberate departure from Najm ICUCalc's cyan identity.
 class AppTheme {
   AppTheme._();
 

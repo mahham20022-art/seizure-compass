@@ -69,9 +69,9 @@ class _SearchResult {
   Color get color {
     switch (kind) {
       case _ResultKind.atlas:
-        return AppColors.ok;
-      case _ResultKind.pearl:
         return AppColors.warn;
+      case _ResultKind.pearl:
+        return AppColors.ok;
       case _ResultKind.localization:
         return AppColors.pnes;
       case _ResultKind.history:

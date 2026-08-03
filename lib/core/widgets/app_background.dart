@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
-/// Recreates the ambient radial-gradient backdrop used behind every screen
-/// in ICUCalc so Seizure Compass shares the same "monitor glow" atmosphere.
+/// Seizure Compass's own ambient radial-gradient backdrop — a soft violet
+/// glow (not the cyan "monitor glow" ICUCalc uses) behind every screen.
 class AppBackground extends StatelessWidget {
   const AppBackground({super.key, required this.child});
 
@@ -15,7 +15,7 @@ class AppBackground extends StatelessWidget {
         gradient: RadialGradient(
           center: Alignment(0.6, -1.0),
           radius: 1.4,
-          colors: [Color(0x1A0EA5E9), AppColors.ink950],
+          colors: [Color(0x268B5CF6), AppColors.ink950],
           stops: [0.0, 0.6],
         ),
       ),

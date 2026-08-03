@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
 /// The Seizure Compass mark: a compass dial with tick marks and a
-/// true-north marker, a stylized brain at its center, an ECG trace running
-/// through it, and a gradient needle swinging from white to cyan.
+/// true-north marker, a stylized brain at its center, a glowing magenta ECG
+/// trace running through it, and a gradient needle swinging from white to
+/// neon magenta.
 class AppLogo extends StatelessWidget {
   const AppLogo({super.key, this.size = 96});
 
@@ -56,7 +57,7 @@ class _CompassPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = w * 0.028
       ..strokeCap = StrokeCap.round
-      ..color = AppColors.brand3.withValues(alpha: 0.55);
+      ..color = AppColors.pnes.withValues(alpha: 0.65);
 
     final path = Path()
       ..moveTo(0, midY)
@@ -134,7 +135,7 @@ class _CompassPainter extends CustomPainter {
   void _paintNorthMarker(Canvas canvas, Offset center, double r) {
     final paint = Paint()
       ..style = PaintingStyle.fill
-      ..color = AppColors.brand3;
+      ..color = AppColors.pnes;
 
     final tipY = center.dy - r * 0.98;
     final baseY = center.dy - r * 0.86;
@@ -158,7 +159,7 @@ class _CompassPainter extends CustomPainter {
 
     final northPaint = Paint()
       ..style = PaintingStyle.fill
-      ..shader = LinearGradient(colors: [Colors.white, AppColors.brand3])
+      ..shader = LinearGradient(colors: [Colors.white, AppColors.pnes])
           .createShader(Rect.fromPoints(center, tipNorth));
     final northHalf = Path()
       ..moveTo(center.dx + perp.dx * width, center.dy + perp.dy * width)
@@ -177,9 +178,9 @@ class _CompassPainter extends CustomPainter {
       ..close();
     canvas.drawPath(southHalf, southPaint);
 
-    // Glow at the bright (north/cyan) tip.
+    // Glow at the bright (north/magenta) tip.
     final glowPaint = Paint()
-      ..color = AppColors.brand3.withValues(alpha: 0.55)
+      ..color = AppColors.pnes.withValues(alpha: 0.55)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
     canvas.drawCircle(tipNorth, r * 0.12, glowPaint);
 

@@ -42,8 +42,19 @@ class BrainDiagram extends StatefulWidget {
   State<BrainDiagram> createState() => _BrainDiagramState();
 }
 
-class _BrainDiagramState extends State<BrainDiagram> {
+class _BrainDiagramState extends State<BrainDiagram> with SingleTickerProviderStateMixin {
   LocalizationRegion? _hovered;
+
+  late final AnimationController _pulseController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1600),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   static const _lobeFractions = <LocalizationRegion, Rect>{
     LocalizationRegion.frontal: Rect.fromLTRB(0.0, 0.0, 0.42, 0.66),
@@ -97,18 +108,26 @@ class _BrainDiagramState extends State<BrainDiagram> {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final size = Size(constraints.maxWidth, constraints.maxHeight);
-                    return Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        if (widget.selected == LocalizationRegion.generalized)
-                          Positioned.fill(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(color: _colorFor(LocalizationRegion.generalized).withValues(alpha: 0.22)),
-                            ),
-                          ),
-                        for (final entry in _lobeFractions.entries) _lobeRegion(entry.key, entry.value, size),
-                        _insularMarker(size),
-                      ],
+                    return AnimatedBuilder(
+                      animation: _pulseController,
+                      builder: (context, _) {
+                        final pulse = Curves.easeInOut.transform(_pulseController.value);
+                        return Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            if (widget.selected == LocalizationRegion.generalized)
+                              Positioned.fill(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: _colorFor(LocalizationRegion.generalized).withValues(alpha: 0.18 + pulse * 0.14),
+                                  ),
+                                ),
+                              ),
+                            for (final entry in _lobeFractions.entries) _lobeRegion(entry.key, entry.value, size, pulse),
+                            _insularMarker(size, pulse),
+                          ],
+                        );
+                      },
                     );
                   },
                 ),
@@ -129,7 +148,7 @@ class _BrainDiagramState extends State<BrainDiagram> {
     );
   }
 
-  Widget _lobeRegion(LocalizationRegion region, Rect fraction, Size size) {
+  Widget _lobeRegion(LocalizationRegion region, Rect fraction, Size size, double pulse) {
     final rect = Rect.fromLTWH(
       fraction.left * size.width,
       fraction.top * size.height,
@@ -140,15 +159,23 @@ class _BrainDiagramState extends State<BrainDiagram> {
     final hovered = _hovered == region;
     final confidence = widget.confidences?[region];
     final baseAlpha = active ? 0.42 : (hovered ? 0.26 : 0.08);
-    final alpha = confidence != null ? (baseAlpha * (0.5 + confidence * 0.5)).clamp(0.06, 0.55) : baseAlpha;
+    final pulseBoost = active ? pulse * 0.16 : 0.0;
+    final rawAlpha = confidence != null
+        ? baseAlpha * (0.5 + confidence * 0.5) + pulseBoost
+        : baseAlpha + pulseBoost;
+    final alpha = rawAlpha.clamp(0.06, 0.65);
 
-    Widget region0 = AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
+    // A plain DecoratedBox (not AnimatedContainer) — the enclosing
+    // AnimatedBuilder already redraws every pulse tick, so a second,
+    // independent transition here would just fight the first.
+    Widget region0 = DecoratedBox(
       decoration: BoxDecoration(
         color: _colorFor(region).withValues(alpha: alpha),
         border: Border.all(
-          color: _colorFor(region).withValues(alpha: active || hovered ? 0.7 : 0.0),
-          width: 1.5,
+          color: _colorFor(region).withValues(
+            alpha: active ? (0.55 + pulse * 0.35).clamp(0.0, 1.0) : (hovered ? 0.7 : 0.0),
+          ),
+          width: active ? 2.0 : 1.5,
         ),
       ),
     );
@@ -168,24 +195,25 @@ class _BrainDiagramState extends State<BrainDiagram> {
     return Positioned.fromRect(rect: rect, child: region0);
   }
 
-  Widget _insularMarker(Size size) {
+  Widget _insularMarker(Size size, double pulse) {
     const cx = 0.50;
     const cy = 0.55;
     const r = 0.05;
     final active = widget.selected == LocalizationRegion.insular;
     final hovered = _hovered == LocalizationRegion.insular;
-    final d = size.shortestSide * r * 2;
+    final baseD = size.shortestSide * r * 2;
+    final d = active ? baseD * (1.0 + pulse * 0.12) : baseD;
 
-    Widget marker = AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
-      width: d,
-      height: d,
+    Widget marker = DecoratedBox(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: _colorFor(LocalizationRegion.insular).withValues(alpha: active ? 0.85 : (hovered ? 0.6 : 0.35)),
+        color: _colorFor(LocalizationRegion.insular).withValues(
+          alpha: active ? (0.7 + pulse * 0.25).clamp(0.0, 1.0) : (hovered ? 0.6 : 0.35),
+        ),
         border: Border.all(color: AppColors.text.withValues(alpha: 0.6), width: 1.5),
       ),
     );
+    marker = SizedBox(width: d, height: d, child: marker);
 
     if (widget.interactive) {
       marker = MouseRegion(

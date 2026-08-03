@@ -5,6 +5,7 @@ import '../../core/widgets/app_background.dart';
 import '../../core/widgets/app_logo.dart';
 import '../../core/widgets/evidence_badge.dart';
 import '../../core/widgets/nav_card.dart';
+import '../../core/widgets/pulse_glow.dart';
 import '../../core/widgets/pulsing_logo.dart';
 import '../about/about_screen.dart';
 import '../assessment/assessment_wizard_screen.dart';
@@ -94,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                                   icon: Icons.menu_book_rounded,
                                   title: 'Seizure Atlas',
                                   subtitle: 'Types, rare syndromes, history and notable figures.',
-                                  accent: AppColors.ok,
+                                  accent: AppColors.warn,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const LibraryScreen()),
                                   ),
@@ -103,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                                   icon: Icons.lightbulb_outline_rounded,
                                   title: 'Clinical Pearls',
                                   subtitle: 'Evidence-based pearls and key points.',
-                                  accent: AppColors.warn,
+                                  accent: AppColors.ok,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const PearlsScreen()),
                                   ),
@@ -176,12 +177,14 @@ class _HeroSection extends StatelessWidget {
         LayoutBuilder(
           builder: (context, constraints) {
             final wide = constraints.maxWidth > 460;
-            final primary = ElevatedButton.icon(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
+            final primary = PulseGlow(
+              child: ElevatedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
+                ),
+                icon: const Icon(Icons.fact_check_rounded, size: 18),
+                label: const Text('Start Assessment'),
               ),
-              icon: const Icon(Icons.fact_check_rounded, size: 18),
-              label: const Text('Start Assessment'),
             );
             final secondary = OutlinedButton.icon(
               onPressed: () => Navigator.of(context).push(
