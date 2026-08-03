@@ -13,6 +13,8 @@ import '../library/library_screen.dart';
 import '../localization/localization_screen.dart';
 import '../pearls/pearls_screen.dart';
 import '../search/search_screen.dart';
+import 'widgets/eeg_pulse_backdrop.dart';
+import 'widgets/home_ambient_backdrop.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,7 +26,8 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         drawer: const _AppDrawer(),
         body: SafeArea(
-          child: Center(
+          child: HomeAmbientBackdrop(
+            child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 960),
               child: Column(
@@ -76,7 +79,8 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.fact_check_rounded,
                                   title: 'Seizure Assessment',
-                                  subtitle: 'Evaluate features and estimate probabilities.',
+                                  subtitle: 'Differentiate epilepsy from its mimics.',
+                                  stat: '5-step wizard',
                                   accent: AppColors.brand3,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
@@ -85,7 +89,8 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.route_rounded,
                                   title: 'Localization',
-                                  subtitle: 'Identify probable seizure origin.',
+                                  subtitle: 'Predict the seizure onset zone.',
+                                  stat: '6 regions',
                                   accent: AppColors.pnes,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const LocalizationScreen()),
@@ -94,7 +99,8 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.menu_book_rounded,
                                   title: 'Seizure Atlas',
-                                  subtitle: 'Types, rare syndromes, history and notable figures.',
+                                  subtitle: 'Explore every seizure syndrome.',
+                                  stat: '29 syndromes',
                                   accent: AppColors.warn,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const LibraryScreen()),
@@ -103,7 +109,8 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.lightbulb_outline_rounded,
                                   title: 'Clinical Pearls',
-                                  subtitle: 'Evidence-based pearls and key points.',
+                                  subtitle: 'High-yield neurological insights.',
+                                  stat: '26 pearls',
                                   accent: AppColors.ok,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const PearlsScreen()),
@@ -123,6 +130,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
+            ),
           ),
         ),
       ),
@@ -137,7 +145,16 @@ class _HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Center(child: PulsingLogo(size: 116)),
+        SizedBox(
+          height: 130,
+          child: Stack(
+            alignment: Alignment.center,
+            children: const [
+              EegPulseBackdrop(width: 260, height: 72),
+              PulsingLogo(size: 116),
+            ],
+          ),
+        ),
         const SizedBox(height: AppSpacing.s5),
         const Center(child: EvidenceBadge()),
         const SizedBox(height: AppSpacing.s4),

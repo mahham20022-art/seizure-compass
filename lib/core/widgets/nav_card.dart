@@ -14,6 +14,7 @@ class NavCard extends StatelessWidget {
     required this.subtitle,
     required this.accent,
     required this.onTap,
+    this.stat,
   });
 
   final IconData icon;
@@ -21,6 +22,10 @@ class NavCard extends StatelessWidget {
   final String subtitle;
   final Color accent;
   final VoidCallback onTap;
+
+  /// Optional small statistic shown as a pill under the subtitle, e.g.
+  /// "29 syndromes".
+  final String? stat;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +62,20 @@ class NavCard extends StatelessWidget {
             subtitle,
             style: const TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.3),
           ),
+          if (stat != null) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppRadii.pill),
+              ),
+              child: Text(
+                stat!,
+                style: TextStyle(color: accent, fontSize: 10.5, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
           // Always pins the "go" chevron to the card's bottom-right corner,
           // regardless of how many lines the title/subtitle wrap to.
           Expanded(
