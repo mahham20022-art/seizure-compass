@@ -72,6 +72,45 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
+                  const SectionHeader(kicker: 'References', title: 'Further reading'),
+                  const SizedBox(height: AppSpacing.s3),
+                  const GlassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _Reference(
+                          'Fisher RS, Cross JH, French JA, et al. Operational classification '
+                          'of seizure types by the International League Against Epilepsy. '
+                          'Epilepsia. 2017;58(4):522-530.',
+                        ),
+                        _Reference(
+                          'Fisher RS, Cross JH, D\'Souza C, et al. Instruction manual for the '
+                          'ILAE 2017 operational classification of seizure types. Epilepsia. '
+                          '2017;58(4):531-542.',
+                        ),
+                        _Reference(
+                          'Blume WT, Lüders HO, Mizrahi E, et al. Glossary of descriptive '
+                          'terminology for ictal semiology: report of the ILAE task force on '
+                          'classification and terminology. Epilepsia. 2001;42(9):1212-1218.',
+                        ),
+                        _Reference(
+                          'LaFrance WC Jr, Baker GA, Duncan R, Goldstein LH, Reuber M. Minimum '
+                          'requirements for the diagnosis of psychogenic nonepileptic seizures: '
+                          'a staged approach. Epilepsia. 2013;54(11):2005-2018.',
+                        ),
+                        _Reference(
+                          'Engel J Jr, Pedley TA, eds. Epilepsy: A Comprehensive Textbook. '
+                          '2nd ed. Lippincott Williams & Wilkins.',
+                        ),
+                        _Reference(
+                          'Panayiotopoulos CP. A Clinical Guide to Epileptic Syndromes and '
+                          'their Treatment. Springer.',
+                          last: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s6),
                   const SectionHeader(kicker: 'Disclaimer', title: 'Medical disclaimer'),
                   const SizedBox(height: AppSpacing.s3),
                   const DisclaimerBanner(),
@@ -102,6 +141,31 @@ class AboutScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// One bibliographic entry in the "Further reading" list.
+class _Reference extends StatelessWidget {
+  const _Reference(this.citation, {this.last = false});
+
+  final String citation;
+  final bool last;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: last ? 0 : 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.menu_book_outlined, size: 14, color: AppColors.faint),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(citation, style: const TextStyle(color: AppColors.text2, fontSize: 12.5, height: 1.45)),
+          ),
+        ],
       ),
     );
   }

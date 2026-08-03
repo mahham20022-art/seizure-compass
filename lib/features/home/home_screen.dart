@@ -5,6 +5,7 @@ import '../../core/widgets/app_background.dart';
 import '../../core/widgets/app_logo.dart';
 import '../../core/widgets/evidence_badge.dart';
 import '../../core/widgets/nav_card.dart';
+import '../../core/widgets/pulsing_logo.dart';
 import '../about/about_screen.dart';
 import '../assessment/assessment_wizard_screen.dart';
 import '../library/library_screen.dart';
@@ -138,7 +139,7 @@ class _HeroSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Center(child: _PulsingLogo(size: 116)),
+        const Center(child: PulsingLogo(size: 116)),
         const SizedBox(height: AppSpacing.s5),
         const Center(child: EvidenceBadge()),
         const SizedBox(height: AppSpacing.s4),
@@ -212,54 +213,6 @@ class _HeroSection extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-}
-
-/// Wraps [AppLogo] in a slow, subtle "breathing" scale + glow so the
-/// compass/EEG mark feels alive without redrawing the mark itself.
-class _PulsingLogo extends StatefulWidget {
-  const _PulsingLogo({required this.size});
-
-  final double size;
-
-  @override
-  State<_PulsingLogo> createState() => _PulsingLogoState();
-}
-
-class _PulsingLogoState extends State<_PulsingLogo> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 3),
-  )..repeat(reverse: true);
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final t = Curves.easeInOut.transform(_controller.value);
-        return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.brand3.withValues(alpha: 0.18 + t * 0.16),
-                blurRadius: 40 + t * 20,
-                spreadRadius: -4,
-              ),
-            ],
-          ),
-          child: Transform.scale(scale: 1.0 + t * 0.03, child: child),
-        );
-      },
-      child: AppLogo(size: widget.size),
     );
   }
 }
