@@ -3,13 +3,15 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radii.dart';
 import '../../core/widgets/app_background.dart';
 import '../../core/widgets/app_logo.dart';
+import '../../core/widgets/evidence_badge.dart';
 import '../../core/widgets/nav_card.dart';
+import '../about/about_screen.dart';
 import '../assessment/assessment_wizard_screen.dart';
 import '../library/library_screen.dart';
 import '../localization/localization_screen.dart';
 import '../pearls/pearls_screen.dart';
-
-const _appVersion = '1.0.0';
+import '../search/search_screen.dart';
+import 'widgets/ai_interpreter_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -23,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
+              constraints: const BoxConstraints(maxWidth: 960),
               child: Column(
                 children: [
                   Padding(
@@ -37,106 +39,85 @@ class HomeScreen extends StatelessWidget {
                             icon: const Icon(Icons.menu_rounded, color: AppColors.brand3),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () => _showAboutDialog(context),
-                          icon: const Icon(Icons.info_outline_rounded, color: AppColors.text2),
+                        Row(
+                          children: [
+                            const SearchAction(),
+                            IconButton(
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => const AboutScreen()),
+                              ),
+                              icon: const Icon(Icons.info_outline_rounded, color: AppColors.text2),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                   Expanded(
                     child: ListView(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                       children: [
-                        const Center(child: AppLogo(size: 104)),
-                        const SizedBox(height: AppSpacing.s5),
-                        const Center(
-                          child: Text.rich(
-                            TextSpan(
+                        const _HeroSection(),
+                        const SizedBox(height: AppSpacing.s8),
+                        const AiInterpreterCard(),
+                        const SizedBox(height: AppSpacing.s8),
+                        const _ModulesHeader(),
+                        const SizedBox(height: AppSpacing.s4),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final columns = constraints.maxWidth >= 760 ? 4 : 2;
+                            return GridView.count(
+                              crossAxisCount: columns,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              mainAxisSpacing: AppSpacing.s3,
+                              crossAxisSpacing: AppSpacing.s3,
+                              childAspectRatio: columns == 4 ? 0.85 : 0.92,
                               children: [
-                                TextSpan(
-                                  text: 'Seizure ',
-                                  style: TextStyle(
-                                    color: AppColors.text,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.5,
+                                NavCard(
+                                  icon: Icons.fact_check_outlined,
+                                  title: 'Seizure Assessment',
+                                  subtitle: 'Evaluate features and estimate probabilities.',
+                                  accent: AppColors.brand3,
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
                                   ),
                                 ),
-                                TextSpan(
-                                  text: 'Compass',
-                                  style: TextStyle(
-                                    color: AppColors.brand3,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.5,
+                                NavCard(
+                                  icon: Icons.route_outlined,
+                                  title: 'Localization',
+                                  subtitle: 'Identify probable seizure origin.',
+                                  accent: AppColors.pnes,
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const LocalizationScreen()),
+                                  ),
+                                ),
+                                NavCard(
+                                  icon: Icons.menu_book_outlined,
+                                  title: 'Seizure Atlas',
+                                  subtitle: 'Explore types, semiology and differential diagnosis.',
+                                  accent: AppColors.ok,
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const LibraryScreen()),
+                                  ),
+                                ),
+                                NavCard(
+                                  icon: Icons.lightbulb_outline_rounded,
+                                  title: 'Clinical Pearls',
+                                  subtitle: 'Evidence-based pearls and key points.',
+                                  accent: AppColors.warn,
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (_) => const PearlsScreen()),
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Center(
-                          child: Text(
-                            'Navigate.  Differentiate.  Localize.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: AppColors.muted, fontSize: 13.5, letterSpacing: 0.2),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.s8),
-                        GridView.count(
-                          crossAxisCount: 2,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          mainAxisSpacing: AppSpacing.s3,
-                          crossAxisSpacing: AppSpacing.s3,
-                          childAspectRatio: 0.92,
-                          children: [
-                            NavCard(
-                              icon: Icons.fact_check_outlined,
-                              title: 'Seizure Assessment',
-                              subtitle: 'Evaluate features and estimate probabilities.',
-                              accent: AppColors.brand3,
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
-                              ),
-                            ),
-                            NavCard(
-                              icon: Icons.route_outlined,
-                              title: 'Localization',
-                              subtitle: 'Identify probable seizure origin.',
-                              accent: AppColors.pnes,
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const LocalizationScreen()),
-                              ),
-                            ),
-                            NavCard(
-                              icon: Icons.menu_book_outlined,
-                              title: 'Seizure Atlas',
-                              subtitle: 'Explore types, semiology and differential diagnosis.',
-                              accent: AppColors.ok,
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const LibraryScreen()),
-                              ),
-                            ),
-                            NavCard(
-                              icon: Icons.lightbulb_outline_rounded,
-                              title: 'Clinical Pearls',
-                              subtitle: 'Evidence-based pearls and key points.',
-                              accent: AppColors.warn,
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const PearlsScreen()),
-                              ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
                         const SizedBox(height: AppSpacing.s6),
                         const _HomeDisclaimerCard(),
                         const SizedBox(height: AppSpacing.s5),
-                        const Center(
-                          child: _VersionFooter(),
-                        ),
+                        const Center(child: _VersionFooter()),
                       ],
                     ),
                   ),
@@ -150,34 +131,149 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-void _showAboutDialog(BuildContext context) {
-  showDialog<void>(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: AppColors.ink800,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.lg)),
-      title: const Text.rich(
-        TextSpan(children: [
-          TextSpan(text: 'Seizure ', style: TextStyle(color: AppColors.text, fontWeight: FontWeight.w800)),
-          TextSpan(text: 'Compass', style: TextStyle(color: AppColors.brand3, fontWeight: FontWeight.w800)),
-        ]),
-      ),
-      content: const Text(
-        'Version $_appVersion\n\n'
-        'Seizure Compass is a clinical decision-support aid based on '
-        'published seizure semiology literature. It estimates probabilities '
-        'only — it does NOT diagnose epilepsy or any other condition. '
-        'Always correlate with the full clinical picture, EEG and imaging.',
-        style: TextStyle(color: AppColors.text2, fontSize: 13.5, height: 1.5),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+class _HeroSection extends StatelessWidget {
+  const _HeroSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Center(child: _PulsingLogo(size: 116)),
+        const SizedBox(height: AppSpacing.s5),
+        const Center(child: EvidenceBadge()),
+        const SizedBox(height: AppSpacing.s4),
+        const Center(
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Seizure ',
+                  style: TextStyle(color: AppColors.text, fontSize: 34, fontWeight: FontWeight.w800, letterSpacing: 0.3),
+                ),
+                TextSpan(
+                  text: 'Compass',
+                  style: TextStyle(color: AppColors.brand3, fontSize: 34, fontWeight: FontWeight.w800, letterSpacing: 0.3),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Center(
+          child: Text(
+            'Clinical Decision Support for Seizure Assessment',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.text2, fontSize: 15, fontWeight: FontWeight.w600),
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Center(
+          child: Text(
+            'Navigate  •  Differentiate  •  Localize',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: AppColors.muted, fontSize: 13, letterSpacing: 0.3),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.s6),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final wide = constraints.maxWidth > 460;
+            final primary = ElevatedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
+              ),
+              icon: const Icon(Icons.fact_check_outlined, size: 18),
+              label: const Text('Start Assessment'),
+            );
+            final secondary = OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const LibraryScreen()),
+              ),
+              icon: const Icon(Icons.menu_book_outlined, size: 18),
+              label: const Text('Explore Library'),
+            );
+            if (wide) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 210, child: primary),
+                  const SizedBox(width: 12),
+                  SizedBox(width: 210, child: secondary),
+                ],
+              );
+            }
+            return Column(
+              children: [
+                SizedBox(width: double.infinity, child: primary),
+                const SizedBox(height: 10),
+                SizedBox(width: double.infinity, child: secondary),
+              ],
+            );
+          },
         ),
       ],
-    ),
-  );
+    );
+  }
+}
+
+/// Wraps [AppLogo] in a slow, subtle "breathing" scale + glow so the
+/// compass/EEG mark feels alive without redrawing the mark itself.
+class _PulsingLogo extends StatefulWidget {
+  const _PulsingLogo({required this.size});
+
+  final double size;
+
+  @override
+  State<_PulsingLogo> createState() => _PulsingLogoState();
+}
+
+class _PulsingLogoState extends State<_PulsingLogo> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 3),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final t = Curves.easeInOut.transform(_controller.value);
+        return Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.brand3.withValues(alpha: 0.18 + t * 0.16),
+                blurRadius: 40 + t * 20,
+                spreadRadius: -4,
+              ),
+            ],
+          ),
+          child: Transform.scale(scale: 1.0 + t * 0.03, child: child),
+        );
+      },
+      child: AppLogo(size: widget.size),
+    );
+  }
+}
+
+class _ModulesHeader extends StatelessWidget {
+  const _ModulesHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text(
+      'MODULES',
+      style: TextStyle(color: AppColors.brand, fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 2),
+    );
+  }
 }
 
 class _AppDrawer extends StatelessWidget {
@@ -211,6 +307,8 @@ class _AppDrawer extends StatelessWidget {
             _drawerTile(context, Icons.route_outlined, 'Localization', const LocalizationScreen()),
             _drawerTile(context, Icons.menu_book_outlined, 'Seizure Atlas', const LibraryScreen()),
             _drawerTile(context, Icons.lightbulb_outline_rounded, 'Clinical Pearls', const PearlsScreen()),
+            _drawerTile(context, Icons.search_rounded, 'Search', const SearchScreen()),
+            _drawerTile(context, Icons.info_outline_rounded, 'About & references', const AboutScreen()),
             const Spacer(),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -284,7 +382,7 @@ class _VersionFooter extends StatelessWidget {
       children: [
         Icon(Icons.psychology_outlined, color: AppColors.faint, size: 14),
         SizedBox(width: 6),
-        Text('Version $_appVersion', style: TextStyle(color: AppColors.faint, fontSize: 11.5)),
+        Text('Version $appVersion', style: TextStyle(color: AppColors.faint, fontSize: 11.5)),
       ],
     );
   }

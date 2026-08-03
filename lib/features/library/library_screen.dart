@@ -6,6 +6,7 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 import '../../data/models/seizure_library_entry.dart';
 import '../../data/repositories/seizure_library_data.dart';
+import '../search/search_screen.dart';
 import 'library_detail_screen.dart';
 
 class LibraryScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return AppBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(title: const Text('Seizure atlas')),
+        appBar: AppBar(title: const Text('Seizure atlas'), actions: [SearchAction()]),
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(

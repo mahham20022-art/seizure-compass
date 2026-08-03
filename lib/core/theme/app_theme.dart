@@ -103,6 +103,36 @@ class AppTheme {
         ),
       ),
       splashFactory: InkRipple.splashFactory,
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          for (final platform in TargetPlatform.values) platform: const _FadeScalePageTransitionsBuilder(),
+        },
+      ),
+    );
+  }
+}
+
+/// A calmer, "premium" cross-fade + slight scale used for every push/pop
+/// instead of the platform-default slide, on every platform (so the web
+/// build feels consistent regardless of host OS).
+class _FadeScalePageTransitionsBuilder extends PageTransitionsBuilder {
+  const _FadeScalePageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+    return FadeTransition(
+      opacity: curved,
+      child: ScaleTransition(
+        scale: Tween(begin: 0.98, end: 1.0).animate(curved),
+        child: child,
+      ),
     );
   }
 }

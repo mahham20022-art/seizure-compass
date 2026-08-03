@@ -26,6 +26,8 @@ class NavCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       onTap: onTap,
+      hoverable: true,
+      borderColor: accent.withValues(alpha: 0.3),
       padding: const EdgeInsets.all(AppSpacing.s4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radii.dart';
 import '../../../core/widgets/app_background.dart';
+import '../../../core/widgets/brain_diagram.dart';
 import '../../../core/widgets/disclaimer_banner.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/probability_bar.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../data/models/assessment_result.dart';
 import '../../../data/models/enums.dart';
+import '../../localization/localization_screen.dart';
+import 'widgets/finding_list.dart';
 import 'widgets/probability_card.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -27,6 +30,8 @@ class ResultScreen extends StatelessWidget {
     final ordered = result.probabilities.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final top = result.topCategory;
+    final topLocalization = result.topLocalization;
+    final topLocalizationScore = result.localizationScores.isEmpty ? 0.0 : result.localizationScores.first.value;
 
     return AppBackground(
       child: Scaffold(
@@ -89,12 +94,33 @@ class ResultScreen extends StatelessWidget {
                     const SizedBox(height: AppSpacing.s3),
                   ],
                   const SizedBox(height: AppSpacing.s4),
+                  const SectionHeader(kicker: 'Rationale', title: 'Why this result?'),
+                  const SizedBox(height: AppSpacing.s4),
+                  _WhyThisResult(result: result, ordered: ordered, categoryColors: _categoryColors),
+                  const SizedBox(height: AppSpacing.s6),
                   const SectionHeader(kicker: 'Localization', title: 'Suggested onset region'),
                   const SizedBox(height: AppSpacing.s4),
                   GlassCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (topLocalization != null) ...[
+                          BrainDiagram(
+                            selected: topLocalization,
+                            interactive: false,
+                            confidences: {topLocalization: topLocalizationScore},
+                          ),
+                          const SizedBox(height: AppSpacing.s4),
+                          Center(
+                            child: Text(
+                              '${topLocalization.label} — ${(topLocalizationScore * 100).round()}% confidence',
+                              style: const TextStyle(color: AppColors.text, fontSize: 14.5, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.s4),
+                          const Divider(),
+                          const SizedBox(height: AppSpacing.s2),
+                        ],
                         for (final entry in result.localizationScores.take(3))
                           Padding(
                             padding: const EdgeInsets.only(bottom: 14),
@@ -117,6 +143,21 @@ class ResultScreen extends StatelessWidget {
                             'No localizing aura or semiology recorded — localization is most meaningful once a focal epileptic mechanism is suspected.',
                             style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.4),
                           ),
+                        if (topLocalization != null) ...[
+                          const SizedBox(height: AppSpacing.s4),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: OutlinedButton.icon(
+                              onPressed: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => LocalizationScreen(initialRegion: topLocalization),
+                                ),
+                              ),
+                              icon: const Icon(Icons.route_outlined, size: 16),
+                              label: const Text('View lobe details'),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -157,6 +198,63 @@ class ResultScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A compact, side-by-side "why" summary comparing the top two categories'
+/// supporting findings at a glance, above the full expandable breakdown.
+class _WhyThisResult extends StatelessWidget {
+  const _WhyThisResult({required this.result, required this.ordered, required this.categoryColors});
+
+  final AssessmentResult result;
+  final List<MapEntry<EventCategory, double>> ordered;
+  final Map<EventCategory, Color> categoryColors;
+
+  @override
+  Widget build(BuildContext context) {
+    final leaders = ordered.take(2).toList();
+    final cards = <Widget>[
+      for (final entry in leaders)
+        GlassCard(
+          borderColor: categoryColors[entry.key]!.withValues(alpha: 0.35),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Supporting ${entry.key.label}',
+                style: TextStyle(color: categoryColors[entry.key], fontSize: 13, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 10),
+              FindingList(items: result.supportingFindings[entry.key] ?? const [], supporting: true),
+            ],
+          ),
+        ),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 480) {
+          return Column(
+            children: [
+              for (var i = 0; i < cards.length; i++) ...[
+                if (i > 0) const SizedBox(height: AppSpacing.s3),
+                SizedBox(width: double.infinity, child: cards[i]),
+              ],
+            ],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < cards.length; i++) ...[
+              if (i > 0) const SizedBox(width: AppSpacing.s3),
+              Expanded(child: cards[i]),
+            ],
+          ],
+        );
+      },
     );
   }
 }
