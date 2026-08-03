@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radii.dart';
 import 'glass_card.dart';
+import 'go_arrow_badge.dart';
 
 /// One of the home screen's 2x2 navigation grid cards (Assessment,
 /// Localization, Atlas, Pearls): an icon badge, title, subtitle, and a
@@ -76,21 +77,12 @@ class NavCard extends StatelessWidget {
               ),
             ),
           ],
-          // Always pins the "go" chevron to the card's bottom-right corner,
+          // Always pins the "go" badge to the card's bottom-right corner,
           // regardless of how many lines the title/subtitle wrap to.
           Expanded(
             child: Align(
               alignment: Alignment.bottomRight,
-              child: Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.24),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: accent.withValues(alpha: 0.65), width: 1.4),
-                ),
-                child: Icon(Icons.arrow_forward_rounded, color: accent, size: 18),
-              ),
+              child: GoArrowBadge(color: accent),
             ),
           ),
         ],
