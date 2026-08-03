@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radii.dart';
 import '../../core/widgets/app_background.dart';
+import '../../core/widgets/compare_arrows_icon.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 import '../../data/models/clinical_pearl.dart';
@@ -22,6 +23,26 @@ IconData categoryIcon(String category) {
       return Icons.science_rounded;
     default:
       return Icons.lightbulb_outline_rounded;
+  }
+}
+
+/// Renders a clinical-pearl category's icon. "Epilepsy vs PNES" uses a
+/// hand-drawn vector glyph instead of the `compare_arrows_rounded` font
+/// icon, which renders as a distorted, inconsistent shape at the small
+/// sizes used here; every other category still uses its Material icon.
+class CategoryIcon extends StatelessWidget {
+  const CategoryIcon({super.key, required this.category, required this.color, this.size = 18});
+
+  final String category;
+  final Color color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    if (category == 'Epilepsy vs PNES') {
+      return CompareArrowsIcon(color: color, size: size);
+    }
+    return Icon(categoryIcon(category), color: color, size: size);
   }
 }
 
@@ -71,7 +92,7 @@ class PearlsScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 10, top: 6),
                       child: Row(
                         children: [
-                          Icon(categoryIcon(category), color: AppColors.brand, size: 15),
+                          CategoryIcon(category: category, color: AppColors.brand, size: 15),
                           const SizedBox(width: 6),
                           Text(
                             category.toUpperCase(),
@@ -135,7 +156,7 @@ void showPearlReference(BuildContext context, ClinicalPearl pearl) {
           ),
           Row(
             children: [
-              Icon(categoryIcon(pearl.category), color: AppColors.brand3, size: 18),
+              CategoryIcon(category: pearl.category, color: AppColors.brand3, size: 18),
               const SizedBox(width: 8),
               Text(pearl.category, style: const TextStyle(color: AppColors.brand3, fontSize: 12.5, fontWeight: FontWeight.w700)),
             ],
@@ -182,7 +203,7 @@ class _PearlFlashCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadii.sm),
               border: Border.all(color: color.withValues(alpha: 0.4)),
             ),
-            child: Icon(categoryIcon(pearl.category), color: color, size: 18),
+            child: CategoryIcon(category: pearl.category, color: color, size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -223,7 +223,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                             borderRadius: BorderRadius.circular(AppRadii.sm),
                                             border: Border.all(color: r.color.withValues(alpha: 0.4)),
                                           ),
-                                          child: Icon(r.icon, color: r.color, size: 18),
+                                          child: r.kind == _ResultKind.pearl
+                                              ? CategoryIcon(category: r.tag, color: r.color, size: 18)
+                                              : Icon(r.icon, color: r.color, size: 18),
                                         ),
                                         const SizedBox(width: 12),
                                         Expanded(
