@@ -5,9 +5,12 @@ import '../../core/widgets/app_background.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../data/models/enums.dart';
 import '../../data/repositories/clinical_pearls_data.dart';
+import '../../data/repositories/epilepsy_history_data.dart';
 import '../../data/repositories/localization_data.dart';
+import '../../data/repositories/notable_figures_data.dart';
 import '../../data/repositories/seizure_library_data.dart';
 import '../library/library_detail_screen.dart';
+import '../library/library_screen.dart';
 import '../localization/localization_screen.dart';
 import '../pearls/pearls_screen.dart';
 
@@ -29,7 +32,7 @@ class SearchAction extends StatelessWidget {
   }
 }
 
-enum _ResultKind { atlas, pearl, localization }
+enum _ResultKind { atlas, pearl, localization, history, figure }
 
 class _SearchResult {
   const _SearchResult({
@@ -56,6 +59,10 @@ class _SearchResult {
         return categoryIcon(tag);
       case _ResultKind.localization:
         return Icons.route_rounded;
+      case _ResultKind.history:
+        return Icons.history_rounded;
+      case _ResultKind.figure:
+        return Icons.person_rounded;
     }
   }
 
@@ -67,6 +74,9 @@ class _SearchResult {
         return AppColors.warn;
       case _ResultKind.localization:
         return AppColors.pnes;
+      case _ResultKind.history:
+      case _ResultKind.figure:
+        return AppColors.brand3;
     }
   }
 }
@@ -111,6 +121,32 @@ List<_SearchResult> _buildIndex() {
       searchText: searchText,
       onTap: (context) => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => LocalizationScreen(initialRegion: info.region)),
+      ),
+    ));
+  }
+
+  for (final event in epilepsyHistory) {
+    results.add(_SearchResult(
+      kind: _ResultKind.history,
+      title: event.title,
+      subtitle: event.description,
+      tag: event.era,
+      searchText: '${event.era} ${event.title} ${event.description}'.toLowerCase(),
+      onTap: (context) => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const LibraryScreen(initialTabIndex: 1)),
+      ),
+    ));
+  }
+
+  for (final figure in notableFigures) {
+    results.add(_SearchResult(
+      kind: _ResultKind.figure,
+      title: figure.name,
+      subtitle: figure.description,
+      tag: figure.years,
+      searchText: '${figure.name} ${figure.years} ${figure.description}'.toLowerCase(),
+      onTap: (context) => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const LibraryScreen(initialTabIndex: 2)),
       ),
     ));
   }
@@ -232,8 +268,9 @@ class _SearchHint extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(32),
         child: Text(
-          'Search across the Seizure Atlas, Localization Explorer and '
-          'Clinical Pearls — try "gelastic", "figure-of-4" or "prolactin".',
+          'Search across the Seizure Atlas, Localization Explorer, Clinical '
+          'Pearls, history and notable figures — try "gelastic", '
+          '"figure-of-4" or "Dostoevsky".',
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.muted, fontSize: 13, height: 1.5),
         ),

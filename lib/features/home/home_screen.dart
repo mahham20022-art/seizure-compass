@@ -12,7 +12,6 @@ import '../library/library_screen.dart';
 import '../localization/localization_screen.dart';
 import '../pearls/pearls_screen.dart';
 import '../search/search_screen.dart';
-import 'widgets/ai_interpreter_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -60,8 +59,6 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         const _HeroSection(),
                         const SizedBox(height: AppSpacing.s8),
-                        const AiInterpreterCard(),
-                        const SizedBox(height: AppSpacing.s8),
                         const _ModulesHeader(),
                         const SizedBox(height: AppSpacing.s4),
                         LayoutBuilder(
@@ -96,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.menu_book_rounded,
                                   title: 'Seizure Atlas',
-                                  subtitle: 'Explore types, semiology and differential diagnosis.',
+                                  subtitle: 'Types, rare syndromes, history and notable figures.',
                                   accent: AppColors.ok,
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (_) => const LibraryScreen()),

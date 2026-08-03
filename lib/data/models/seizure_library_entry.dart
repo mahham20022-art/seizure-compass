@@ -7,6 +7,7 @@ class SeizureLibraryEntry {
     required this.keyFeatures,
     required this.eeg,
     this.pearl,
+    this.isRare = false,
   });
 
   final String name;
@@ -18,6 +19,10 @@ class SeizureLibraryEntry {
   final List<String> keyFeatures;
   final String eeg;
   final String? pearl;
+
+  /// Flags rare/genetic epilepsy syndromes shown under the Atlas's
+  /// "Rare types" filter.
+  final bool isRare;
 
   /// Combined text used by the library search box.
   String get searchText =>
