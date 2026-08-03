@@ -327,12 +327,31 @@ class _VersionFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return const Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.psychology_outlined, color: AppColors.faint, size: 14),
-        SizedBox(width: 6),
-        Text('Version $appVersion', style: TextStyle(color: AppColors.faint, fontSize: 11.5)),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.verified_rounded, color: AppColors.faint, size: 12),
+            SizedBox(width: 6),
+            Text('Based on ILAE 2017 Classification', style: TextStyle(color: AppColors.faint, fontSize: 11)),
+          ],
+        ),
+        SizedBox(height: 6),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.psychology_outlined, color: AppColors.faint, size: 14),
+            SizedBox(width: 6),
+            Text('Version $appVersion', style: TextStyle(color: AppColors.faint, fontSize: 11.5)),
+          ],
+        ),
+        SizedBox(height: 4),
+        Text(
+          '© 2026 Seizure Compass — Dr. Mohamed Najm',
+          style: TextStyle(color: AppColors.faint, fontSize: 10.5),
+        ),
       ],
     );
   }

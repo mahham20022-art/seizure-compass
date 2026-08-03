@@ -165,7 +165,32 @@ class SeizureScoringEngine {
         'Consider inpatient video-EEG monitoring to capture a typical event, '
         'given the close differential above',
       );
+    } else if (input.investigations['eeg'] == InvestigationResult.normal &&
+        (top.key == EventCategory.epileptic || second.key == EventCategory.epileptic)) {
+      suggestions.add(
+        'A normal routine EEG does not exclude epilepsy — consider a repeat '
+        'or sleep-deprived EEG',
+      );
     }
+
+    final pnesLikely = probabilities[EventCategory.pnes]! >= 0.3;
+    if (pnesLikely) {
+      suggestions.add('Psychiatric assessment, given the PNES probability above');
+    }
+
+    if (closeCall) {
+      suggestions.add(
+        'Consider admission for diagnostic monitoring while the '
+        'differential remains close',
+      );
+    }
+
+    if (top.key == EventCategory.epileptic || second.key == EventCategory.epileptic) {
+      suggestions.add('Referral to a neurologist/epilepsy specialist for confirmation and long-term management');
+    } else if (pnesLikely) {
+      suggestions.add('Referral to psychiatry or a neuropsychiatry/PNES clinic');
+    }
+
     return suggestions;
   }
 }

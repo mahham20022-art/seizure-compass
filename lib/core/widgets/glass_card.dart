@@ -32,11 +32,16 @@ class GlassCard extends StatefulWidget {
 
 class _GlassCardState extends State<GlassCard> {
   bool _hovering = false;
+  bool _pressed = false;
 
   void _setHover(bool value) {
     if (widget.hoverable && _hovering != value) {
       setState(() => _hovering = value);
     }
+  }
+
+  void _setPressed(bool value) {
+    if (_pressed != value) setState(() => _pressed = value);
   }
 
   @override
@@ -83,10 +88,20 @@ class _GlassCardState extends State<GlassCard> {
         child: InkWell(
           borderRadius: BorderRadius.circular(AppRadii.lg),
           onTap: widget.onTap,
+          onTapDown: (_) => _setPressed(true),
+          onTapCancel: () => _setPressed(false),
+          onTapUp: (_) => _setPressed(false),
           child: card,
         ),
       );
     }
+
+    result = AnimatedScale(
+      scale: _pressed ? 0.97 : 1.0,
+      duration: const Duration(milliseconds: 120),
+      curve: Curves.easeOut,
+      child: result,
+    );
 
     if (!widget.hoverable) return result;
 
