@@ -160,7 +160,7 @@ class _Reference extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.menu_book_outlined, size: 14, color: AppColors.faint),
+          const Icon(Icons.menu_book_rounded, size: 14, color: AppColors.faint),
           const SizedBox(width: 10),
           Expanded(
             child: Text(citation, style: const TextStyle(color: AppColors.text2, fontSize: 12.5, height: 1.45)),

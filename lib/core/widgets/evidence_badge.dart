@@ -21,7 +21,7 @@ class EvidenceBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.verified_outlined, color: AppColors.brand, size: 14),
+          const Icon(Icons.verified_rounded, color: AppColors.brand, size: 14),
           const SizedBox(width: 6),
           Text(
             label,

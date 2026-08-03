@@ -51,11 +51,11 @@ class _SearchResult {
   IconData get icon {
     switch (kind) {
       case _ResultKind.atlas:
-        return Icons.menu_book_outlined;
+        return Icons.menu_book_rounded;
       case _ResultKind.pearl:
         return categoryIcon(tag);
       case _ResultKind.localization:
-        return Icons.route_outlined;
+        return Icons.route_rounded;
     }
   }
 

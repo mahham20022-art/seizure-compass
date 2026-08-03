@@ -153,7 +153,7 @@ class ResultScreen extends StatelessWidget {
                                   builder: (_) => LocalizationScreen(initialRegion: topLocalization),
                                 ),
                               ),
-                              icon: const Icon(Icons.route_outlined, size: 16),
+                              icon: const Icon(Icons.route_rounded, size: 16),
                               label: const Text('View lobe details'),
                             ),
                           ),
@@ -174,7 +174,7 @@ class ResultScreen extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.science_outlined, size: 16, color: AppColors.brand3),
+                                const Icon(Icons.science_rounded, size: 16, color: AppColors.brand3),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(s, style: const TextStyle(color: AppColors.text2, fontSize: 13, height: 1.4)),

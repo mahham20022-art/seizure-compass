@@ -54,7 +54,7 @@ class _AiInterpreterCardState extends State<AiInterpreterCard> {
                   borderRadius: BorderRadius.circular(AppRadii.sm),
                   border: Border.all(color: AppColors.pnes.withValues(alpha: 0.4)),
                 ),
-                child: const Icon(Icons.auto_awesome_outlined, color: AppColors.pnes, size: 18),
+                child: const Icon(Icons.auto_awesome_rounded, color: AppColors.pnes, size: 18),
               ),
               const SizedBox(width: 10),
               const Expanded(
@@ -103,7 +103,7 @@ class _AiInterpreterCardState extends State<AiInterpreterCard> {
               alignment: Alignment.centerRight,
               child: OutlinedButton.icon(
                 onPressed: _analyze,
-                icon: const Icon(Icons.auto_awesome_outlined, size: 16),
+                icon: const Icon(Icons.auto_awesome_rounded, size: 16),
                 label: const Text('Analyze'),
               ),
             ),

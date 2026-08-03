@@ -13,13 +13,13 @@ IconData categoryIcon(String category) {
     case 'Epilepsy vs PNES':
       return Icons.compare_arrows_rounded;
     case 'Localization':
-      return Icons.route_outlined;
+      return Icons.route_rounded;
     case 'Syndromes':
-      return Icons.account_tree_outlined;
+      return Icons.account_tree_rounded;
     case 'Mimics':
       return Icons.warning_amber_rounded;
     case 'Investigations':
-      return Icons.science_outlined;
+      return Icons.science_rounded;
     default:
       return Icons.lightbulb_outline_rounded;
   }

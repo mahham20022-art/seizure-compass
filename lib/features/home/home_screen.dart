@@ -76,7 +76,7 @@ class HomeScreen extends StatelessWidget {
                               childAspectRatio: columns == 4 ? 0.85 : 0.92,
                               children: [
                                 NavCard(
-                                  icon: Icons.fact_check_outlined,
+                                  icon: Icons.fact_check_rounded,
                                   title: 'Seizure Assessment',
                                   subtitle: 'Evaluate features and estimate probabilities.',
                                   accent: AppColors.brand3,
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 NavCard(
-                                  icon: Icons.route_outlined,
+                                  icon: Icons.route_rounded,
                                   title: 'Localization',
                                   subtitle: 'Identify probable seizure origin.',
                                   accent: AppColors.pnes,
@@ -94,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 NavCard(
-                                  icon: Icons.menu_book_outlined,
+                                  icon: Icons.menu_book_rounded,
                                   title: 'Seizure Atlas',
                                   subtitle: 'Explore types, semiology and differential diagnosis.',
                                   accent: AppColors.ok,
@@ -183,14 +183,14 @@ class _HeroSection extends StatelessWidget {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const AssessmentWizardScreen()),
               ),
-              icon: const Icon(Icons.fact_check_outlined, size: 18),
+              icon: const Icon(Icons.fact_check_rounded, size: 18),
               label: const Text('Start Assessment'),
             );
             final secondary = OutlinedButton.icon(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const LibraryScreen()),
               ),
-              icon: const Icon(Icons.menu_book_outlined, size: 18),
+              icon: const Icon(Icons.menu_book_rounded, size: 18),
               label: const Text('Explore Library'),
             );
             if (wide) {
@@ -256,9 +256,9 @@ class _AppDrawer extends StatelessWidget {
               ),
             ),
             const Divider(color: AppColors.line, height: 24),
-            _drawerTile(context, Icons.fact_check_outlined, 'Seizure Assessment', const AssessmentWizardScreen()),
-            _drawerTile(context, Icons.route_outlined, 'Localization', const LocalizationScreen()),
-            _drawerTile(context, Icons.menu_book_outlined, 'Seizure Atlas', const LibraryScreen()),
+            _drawerTile(context, Icons.fact_check_rounded, 'Seizure Assessment', const AssessmentWizardScreen()),
+            _drawerTile(context, Icons.route_rounded, 'Localization', const LocalizationScreen()),
+            _drawerTile(context, Icons.menu_book_rounded, 'Seizure Atlas', const LibraryScreen()),
             _drawerTile(context, Icons.lightbulb_outline_rounded, 'Clinical Pearls', const PearlsScreen()),
             _drawerTile(context, Icons.search_rounded, 'Search', const SearchScreen()),
             _drawerTile(context, Icons.info_outline_rounded, 'About & references', const AboutScreen()),
