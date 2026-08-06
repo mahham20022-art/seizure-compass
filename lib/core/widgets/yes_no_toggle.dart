@@ -33,6 +33,10 @@ class YesNoToggle extends StatelessWidget {
           _segment('No', value == false, () => onChanged(false)),
           const SizedBox(width: 6),
           _segment('Yes', value == true, () => onChanged(true)),
+          const SizedBox(width: 6),
+          // Not every finding is known at assessment time — this reverts
+          // the question to unanswered rather than forcing a guess.
+          _segment('N/A', value == null, () => onChanged(null)),
         ],
       ),
     );
@@ -43,7 +47,7 @@ class YesNoToggle extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadii.sm),
       child: Container(
-        width: 56,
+        width: 46,
         padding: const EdgeInsets.symmetric(vertical: 8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
