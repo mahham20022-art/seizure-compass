@@ -42,7 +42,7 @@ seizure-semiology signs — not a black box, and not a diagnosis.
 3. **Seizure Atlas** — a searchable reference of 21 seizure types, reflex
    epilepsies and epilepsy syndromes (including PNES and convulsive syncope
    as mimics).
-4. **Clinical Pearls** — short, evidence-based teaching notes grouped by
+4. **Clinical Pearls** — short teaching notes grouped by
    theme (epilepsy vs PNES, localization, syndromes, mimics,
    investigations).
 

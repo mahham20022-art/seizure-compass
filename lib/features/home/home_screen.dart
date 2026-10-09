@@ -62,6 +62,8 @@ class HomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
                       children: [
                         const _HeroSection(),
+                        const SizedBox(height: AppSpacing.s6),
+                        const _TrustPanel(),
                         const SizedBox(height: AppSpacing.s8),
                         const _ModulesHeader(),
                         const SizedBox(height: AppSpacing.s4),
@@ -89,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.route_rounded,
                                   title: 'Localization',
-                                  subtitle: 'Predict the seizure onset zone.',
+                                  subtitle: 'Suggest a likely onset region.',
                                   stat: '6 regions',
                                   accent: AppColors.pnes,
                                   onTap: () => Navigator.of(context).push(
@@ -99,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                                 NavCard(
                                   icon: Icons.menu_book_rounded,
                                   title: 'Seizure Atlas',
-                                  subtitle: 'Explore every seizure syndrome.',
+                                  subtitle: 'Browse seizure types and syndromes.',
                                   stat: '29 syndromes',
                                   accent: AppColors.warn,
                                   onTap: () => Navigator.of(context).push(
@@ -234,6 +236,75 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
+/// Short evidence/trust summary shown before the user starts an assessment.
+class _TrustPanel extends StatelessWidget {
+  const _TrustPanel();
+
+  static const _labelStyle = TextStyle(color: AppColors.text, fontWeight: FontWeight.w700);
+  static const _bodyStyle = TextStyle(color: AppColors.text2, fontSize: 12.5, height: 1.5);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.s4),
+      decoration: BoxDecoration(
+        color: AppColors.warn.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(color: AppColors.warn.withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Before you use it',
+            style: TextStyle(color: AppColors.warn, fontSize: 14, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          const Text.rich(
+            TextSpan(style: _bodyStyle, children: [
+              TextSpan(text: 'For ', style: _labelStyle),
+              TextSpan(
+                text: 'clinicians and trainees reasoning through a witnessed paroxysmal event; '
+                    'not for patients to self-assess.',
+              ),
+            ]),
+          ),
+          const SizedBox(height: 6),
+          const Text.rich(
+            TextSpan(style: _bodyStyle, children: [
+              TextSpan(text: 'Method: ', style: _labelStyle),
+              TextSpan(
+                text: 'transparent heuristic weights from seizure-semiology teaching and ILAE '
+                    'classification. Every weight and its rationale is shown with the result.',
+              ),
+            ]),
+          ),
+          const SizedBox(height: 6),
+          const Text.rich(
+            TextSpan(style: _bodyStyle, children: [
+              TextSpan(text: 'Not prospectively validated. ', style: _labelStyle),
+              TextSpan(text: 'Decision support only; it does not replace clinical judgement or video-EEG.'),
+            ]),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Version $appVersion · last reviewed $appLastReviewed · nothing you enter is stored or sent.',
+            style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.45),
+          ),
+          const SizedBox(height: 4),
+          TextButton(
+            style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 36)),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AboutScreen()),
+            ),
+            child: const Text('Evidence, limits and changelog'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ModulesHeader extends StatelessWidget {
   const _ModulesHeader();
 
@@ -278,7 +349,7 @@ class _AppDrawer extends StatelessWidget {
             _drawerTile(context, Icons.menu_book_rounded, 'Seizure Atlas', const LibraryScreen()),
             _drawerTile(context, Icons.lightbulb_outline_rounded, 'Clinical Pearls', const PearlsScreen()),
             _drawerTile(context, Icons.search_rounded, 'Search', const SearchScreen()),
-            _drawerTile(context, Icons.info_outline_rounded, 'About & references', const AboutScreen()),
+            _drawerTile(context, Icons.info_outline_rounded, 'About & evidence', const AboutScreen()),
             const Spacer(),
             const Padding(
               padding: EdgeInsets.all(20),
@@ -355,7 +426,7 @@ class _VersionFooter extends StatelessWidget {
           children: [
             Icon(Icons.verified_rounded, color: AppColors.faint, size: 12),
             SizedBox(width: 6),
-            Text('Based on ILAE 2017 Classification', style: TextStyle(color: AppColors.faint, fontSize: 11)),
+            Text('Seizure types follow ILAE 2017 classification', style: TextStyle(color: AppColors.faint, fontSize: 11)),
           ],
         ),
         SizedBox(height: 6),
@@ -364,7 +435,7 @@ class _VersionFooter extends StatelessWidget {
           children: [
             Icon(Icons.psychology_outlined, color: AppColors.faint, size: 14),
             SizedBox(width: 6),
-            Text('Version $appVersion', style: TextStyle(color: AppColors.faint, fontSize: 11.5)),
+            Text('Version $appVersion · reviewed $appLastReviewed', style: TextStyle(color: AppColors.faint, fontSize: 11.5)),
           ],
         ),
         SizedBox(height: 4),
