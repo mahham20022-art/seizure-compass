@@ -7,7 +7,7 @@ import '../../core/widgets/disclaimer_banner.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 
-const appVersion = '1.0.0';
+const appVersion = '1.1.0';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -54,6 +54,22 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
+                  const SectionHeader(kicker: 'Scope', title: 'Who it is for, and its limits'),
+                  const SizedBox(height: AppSpacing.s3),
+                  const GlassCard(
+                    child: Text(
+                      'For: clinicians and trainees reasoning through a witnessed paroxysmal event. '
+                      'Not for patients or families to self-assess.\n\n'
+                      'It does: weigh the features you enter, show which findings pushed the result '
+                      'each way, and suggest a lobe of onset when a focal mechanism is likely.\n\n'
+                      'It does not: read EEG or imaging, replace video-EEG, decide treatment, or give a '
+                      'validated probability.\n\n'
+                      'Your data: nothing you enter is stored or sent anywhere; it stays in this page '
+                      'and is gone when you close it.',
+                      style: TextStyle(color: AppColors.text2, fontSize: 13.5, height: 1.55),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s6),
                   const SectionHeader(kicker: 'Evidence basis', title: 'How the estimates are derived'),
                   const SizedBox(height: AppSpacing.s3),
                   const GlassCard(
@@ -78,6 +94,11 @@ class AboutScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _Reference(
+                          'Updated classification of epileptic seizures: position paper of the '
+                          'International League Against Epilepsy. Epilepsia. 2025. '
+                          'doi:10.1111/epi.18338',
+                        ),
                         _Reference(
                           'Fisher RS, Cross JH, French JA, et al. Operational classification '
                           'of seizure types by the International League Against Epilepsy. '

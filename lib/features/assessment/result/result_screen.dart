@@ -67,7 +67,7 @@ class ResultScreen extends StatelessWidget {
                         ConfidenceRing(
                           value: result.probabilities[top]!,
                           color: _categoryColors[top]!,
-                          label: 'CONFIDENCE',
+                          label: 'WEIGHT',
                         ),
                         const SizedBox(width: AppSpacing.s5),
                         Expanded(
@@ -75,7 +75,7 @@ class ResultScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'MOST LIKELY DIAGNOSIS',
+                                'LEADING CONSIDERATION',
                                 style: TextStyle(color: AppColors.muted, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4),
                               ),
                               const SizedBox(height: 6),
@@ -99,7 +99,13 @@ class ResultScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
-                  const SectionHeader(kicker: 'Differential', title: 'Probability breakdown'),
+                  const SectionHeader(kicker: 'Differential', title: 'Relative weighting'),
+                  const SizedBox(height: AppSpacing.s2),
+                  const Text(
+                    'Heuristic weights from the features you entered, not a validated probability. '
+                    'Use them to structure your reasoning, then confirm with history, EEG and imaging.',
+                    style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.45),
+                  ),
                   const SizedBox(height: AppSpacing.s4),
                   for (final entry in ordered) ...[
                     ProbabilityCard(
