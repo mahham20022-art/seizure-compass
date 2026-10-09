@@ -16,7 +16,7 @@ extension EvidenceLevelX on EvidenceLevel {
   }
 }
 
-/// A single short, evidence-based teaching note (Module 4), shown as a
+/// A single short teaching note (Module 4), shown as a
 /// flashcard: a short [title] (the key message) plus a one-line
 /// [text] explanation.
 class ClinicalPearl {

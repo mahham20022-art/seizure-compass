@@ -106,6 +106,13 @@ class ResultScreen extends StatelessWidget {
                     'Use them to structure your reasoning, then confirm with history, EEG and imaging.',
                     style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.45),
                   ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Basis: semiology teaching points and ILAE classification (Fisher et al., Epilepsia 2017; '
+                    'ILAE semiology glossary, Blume et al., Epilepsia 2001; PNES criteria, LaFrance et al., '
+                    'Epilepsia 2013). Full list under About.',
+                    style: TextStyle(color: AppColors.faint, fontSize: 11.5, height: 1.45),
+                  ),
                   const SizedBox(height: AppSpacing.s4),
                   for (final entry in ordered) ...[
                     ProbabilityCard(
@@ -138,7 +145,7 @@ class ResultScreen extends StatelessWidget {
                           const SizedBox(height: AppSpacing.s4),
                           Center(
                             child: Text(
-                              '${topLocalization.label} — ${(topLocalizationScore * 100).round()}% confidence',
+                              '${topLocalization.label} — ${(topLocalizationScore * 100).round()}% relative weight',
                               style: const TextStyle(color: AppColors.text, fontSize: 14.5, fontWeight: FontWeight.w700),
                             ),
                           ),

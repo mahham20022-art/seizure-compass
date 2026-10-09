@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radii.dart';
 
-/// Small trust-signal pill — "Evidence-Based Clinical Decision Support" on
+/// Small status pill — "Heuristic decision support · not validated" on
 /// the home hero, reusable anywhere else a quick evidence badge is useful.
 class EvidenceBadge extends StatelessWidget {
-  const EvidenceBadge({super.key, this.label = 'Evidence-Based Clinical Decision Support'});
+  const EvidenceBadge({super.key, this.label = 'Heuristic decision support · not validated'});
 
   final String label;
 

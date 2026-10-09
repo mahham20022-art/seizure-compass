@@ -6,7 +6,7 @@
     "display": "standalone",
     "background_color": "#111827",
     "theme_color": "#111827",
-    "description": "Estimates the probability of epileptic seizure, PNES, syncope or other mimic from published seizure semiology. Not a diagnostic device.",
+    "description": "Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic. Heuristic decision support, not validated; not a diagnostic device.",
     "orientation": "portrait-primary",
     "categories": ["medical", "health", "education"],
     "lang": "en",

@@ -83,7 +83,7 @@ class PearlsScreen extends StatelessWidget {
                 children: [
                   const SectionHeader(
                     kicker: 'Module 4',
-                    title: 'Short, evidence-based teaching notes',
+                    title: 'Short teaching notes',
                     subtitle: 'Tap a card for its clinical context and category.',
                   ),
                   const SizedBox(height: AppSpacing.s5),
