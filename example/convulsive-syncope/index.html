@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10171F">
+  <meta name="description" content="Seizure Compass — navigate, differentiate and localize seizure presentations. Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic. Naive-Bayes decision support with published weights, the Calgary score and cardiac red flags; not yet validated on patients.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Seizure Compass">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <link rel="canonical" href="https://compass.thetract.org/example/convulsive-syncope/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Seizure Compass — Navigate. Differentiate. Localize.">
+  <meta property="og:description" content="Free decision support for a witnessed paroxysmal event: epileptic seizure, PNES, syncope or another mimic, with a probable lobe of onset. For clinicians and trainees.">
+  <meta property="og:url" content="https://compass.thetract.org/example/convulsive-syncope/">
+  <meta property="og:image" content="https://compass.thetract.org/icons/Icon-512.png">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Seizure Compass", "url": "https://compass.thetract.org/", "applicationCategory": "MedicalApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic, and suggests a lobe of onset. Heuristic decision support for clinicians, not validated.", "author": {"@type": "Person", "name": "Dr Mohamed Najm", "url": "https://thetract.org/about/", "sameAs": ["https://orcid.org/0009-0001-5506-2757", "https://www.linkedin.com/in/dr-mohamed-najm-aldeen-aa6452135"]}, "publisher": {"@type": "Organization", "name": "The Tract · Independent Neurology Press", "url": "https://thetract.org/"}}</script>
+  <title>Worked example: convulsive syncope · Seizure Compass</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #10171F;
+    }
+    #splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(1200px 700px at 60% -10%, rgba(182,108,78,.14), transparent 60%), #10171F;
+      flex-direction: column; gap: 18px; font-family: Georgia, 'Times New Roman', serif; color: #F4F0E7;
+      transition: opacity .4s ease;
+      z-index: 9999;
+    }
+    #splash.hide { opacity: 0; pointer-events: none; }
+    #splash .mark {
+      width: 64px; height: 64px; border-radius: 50%;
+      width: 40px; height: 40px;
+      border: 2px solid #29364A;
+      border-top-color: #B66C4E;
+      animation: spin 1s linear infinite;
+    }
+    #splash .word { font-size: 30px; letter-spacing: .2px; }
+    #splash .word i { color: #D08A6C; }
+    #splash .sub { font: 13px system-ui, sans-serif; color: #A0A8B2; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <noscript>
+    <h1>Seizure Compass</h1>
+    <p>Free decision support for clinicians and trainees reasoning through a witnessed paroxysmal event. It weighs witnessed features toward an epileptic seizure, psychogenic non-epileptic seizure (PNES), syncope or another mimic, shows which findings pushed the result each way, and suggests a probable lobe of onset when a focal epileptic mechanism is likely. Weights come from published studies (with an evidence grade for each) and the validated Calgary Syncope–Seizure Score is included; the combined model is not yet validated on patients and is not a diagnostic device. Part of <a href="https://thetract.org/">The Tract</a>, by Dr Mohamed Najm.</p>
+    <p>Worked examples: <a href="/example/convulsive-seizure">convulsion from sleep</a>, <a href="/example/pnes">prolonged event with eyes closed</a>, <a href="/example/convulsive-syncope">faint with jerks</a>, <a href="/example/cardiac-red-flag">collapse while running</a>.</p>
+    <p>Seizure Compass needs JavaScript to run.</p>
+  </noscript>
+  <div id="splash"><div class="word">Seizure <i>Compass</i></div><div class="mark"></div><div class="sub">The Tract · loading the engine…</div></div>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var splash = document.getElementById('splash');
+      if (splash) {
+        splash.classList.add('hide');
+        setTimeout(function () { splash.remove(); }, 400);
+      }
+    });
+  </script>
+  <script>
+    window.goatcounter = { path: function (p) { return 'compass' + (p === '/' ? '/' : p); } };
+  </script>
+  <script data-goatcounter="https://naaajm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
