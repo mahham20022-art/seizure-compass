@@ -26,6 +26,13 @@ class SeizureScoringEngine {
 
   static const double _dampFactor = 0.5;
 
+  /// Evidence is tempered (×0.8) and mixed with 5% of a uniform distribution,
+  /// so no category is shown above ~96% or below ~1%. Naive Bayes assumes
+  /// independent findings and the model is unvalidated, so certainty would
+  /// be false precision.
+  static const double _temper = 0.8;
+  static const double _mix = 0.05;
+
   AssessmentResult score(AssessmentInput input) {
     final priors = settingPriors[input.setting]!;
     final logit = <EventCategory, double>{
@@ -102,7 +109,7 @@ class SeizureScoringEngine {
       final deltas = <EventCategory, double>{};
       w.weights.forEach((c, v) {
         deltas[c] = v * f;
-        logit[c] = logit[c]! + v * f;
+        logit[c] = logit[c]! + v * f * _temper;
         if (v * f > 0.25) supporting[c]!.add(w.rationale);
         if (v * f < -0.25) against[c]!.add(w.rationale);
       });
@@ -117,7 +124,10 @@ class SeizureScoringEngine {
     }
     contributions.sort((a, b) => _maxAbs(b).compareTo(_maxAbs(a)));
 
-    final probabilities = _softmax(logit);
+    final raw = _softmax(logit);
+    final probabilities = {
+      for (final c in EventCategory.values) c: (1 - _mix) * raw[c]! + _mix / EventCategory.values.length,
+    };
     for (final c in EventCategory.values) {
       supporting[c] = supporting[c]!.toSet().take(6).toList();
       against[c] = against[c]!.toSet().take(6).toList();

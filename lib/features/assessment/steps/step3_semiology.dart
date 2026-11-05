@@ -23,7 +23,6 @@ class Step3Semiology extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          kicker: 'Step 3',
           title: 'The event itself',
           subtitle: 'What did the witness or video show?',
         ),

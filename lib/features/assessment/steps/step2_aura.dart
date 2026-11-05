@@ -20,7 +20,6 @@ class Step2Aura extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          kicker: 'Step 2',
           title: 'Before the event',
           subtitle: 'Circumstances, prodrome and any aura reported just before it started.',
         ),

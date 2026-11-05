@@ -19,7 +19,6 @@ class Step4Postictal extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          kicker: 'Step 4',
           title: 'After the event',
           subtitle: 'Breathing, recovery and what the patient remembers.',
         ),

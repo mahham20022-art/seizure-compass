@@ -19,7 +19,6 @@ class Step5Investigations extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          kicker: 'Step 5',
           title: 'Investigations',
           subtitle: 'Enter results you already have. Leave the rest as "Not done".',
         ),

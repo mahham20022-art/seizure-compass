@@ -5,6 +5,7 @@ const base = 'http://127.0.0.1:8080';
 const routes = [
   ['home', '/'],
   ['assess', '/assess'],
+  ['localization', '/localization/temporal'],
   ['ex-seizure', '/example/convulsive-seizure'],
   ['ex-syncope', '/example/convulsive-syncope'],
   ['ex-cardiac', '/example/cardiac-red-flag'],
@@ -28,8 +29,8 @@ for (const [dev, vp] of [['phone', { width: 390, height: 844 }], ['desk', { widt
     await page.screenshot({ path: `shots/${dev}-${name}.png` });
     if (name.startsWith('ex-')) {
       await page.mouse.move(vp.width / 2, vp.height / 2);
-      for (let k = 1; k <= 2; k++) {
-        await page.mouse.wheel(0, vp.height * 0.85);
+      for (let k = 1; k <= 5; k++) {
+        for (let j = 0; j < 6; j++) { await page.mouse.wheel(0, vp.height * 0.15); await page.waitForTimeout(80); }
         await page.waitForTimeout(900);
         await page.screenshot({ path: `shots/${dev}-${name}-${k}.png` });
       }

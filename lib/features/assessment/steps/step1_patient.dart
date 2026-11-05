@@ -27,7 +27,6 @@ class Step1Patient extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          kicker: 'Step 1',
           title: 'Patient and setting',
           subtitle: 'Setting sets the starting probabilities; red flags are checked before anything else.',
         ),

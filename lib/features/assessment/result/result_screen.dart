@@ -26,7 +26,7 @@ Color categoryColor(EventCategory c) => switch (c) {
       EventCategory.otherMimic => AppColors.otherMimic,
     };
 
-String _pct(double v) => '${(v * 100).round()}%';
+String _pct(double v) => v < 0.01 ? '<1%' : '${(v * 100).round()}%';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({super.key, required this.result, this.example});
@@ -98,7 +98,7 @@ class ResultScreen extends StatelessWidget {
                               const Text('LEADING CONSIDERATION',
                                   style: TextStyle(color: AppColors.muted, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4)),
                               const SizedBox(height: 6),
-                              Text(top.label,
+                              Text(top == EventCategory.syncope && result.hasCardiacFlag ? 'Syncope — cardiac?' : top.label,
                                   style: TextStyle(
                                       color: topColor, fontSize: 26, fontWeight: FontWeight.w600, fontFamily: 'Newsreader')),
                               const SizedBox(height: 6),
@@ -308,6 +308,9 @@ class _RedFlagCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Cardiac flags share one action; the abnormal-ECG flag has its own.
+    final cardiac = flags.where((f) => f.cardiac && f.title != 'Abnormal ECG').toList();
+    final others = flags.where((f) => !cardiac.contains(f)).toList();
     return Container(
       padding: const EdgeInsets.all(AppSpacing.s4),
       decoration: BoxDecoration(
@@ -329,7 +332,19 @@ class _RedFlagCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          for (final f in flags)
+          if (cardiac.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: '${cardiac.map((f) => f.title).join(' · ')}. ',
+                      style: const TextStyle(color: AppColors.text, fontWeight: FontWeight.w700)),
+                  TextSpan(text: cardiac.first.action),
+                ]),
+                style: const TextStyle(color: AppColors.text2, fontSize: 13, height: 1.45),
+              ),
+            ),
+          for (final f in others)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Text.rich(

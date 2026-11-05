@@ -96,6 +96,8 @@ class AboutScreen extends StatelessWidget {
                             'bite specificity ≈ 100% vs PNES; urinary incontinence LR+ ≈ 0.9). Each carries a grade: '
                             'A meta-analysis, systematic review or validated score; B cohort or video-EEG series; '
                             'C expert teaching.'),
+                        _Bullet('Probabilities are tempered and mixed with 5% of a uniform distribution, so the app never '
+                            'shows more than about 96%: certainty would be false precision for an unvalidated model.'),
                         _Bullet('Correlated findings are damped: within a group (automatisms, convulsive signs, '
                             'presyncope, PNES motor signs) only the strongest counts in full and the rest at half.'),
                         _Bullet('Calgary Syncope–Seizure Score is computed exactly as published (Sheldon 2002) and shown '

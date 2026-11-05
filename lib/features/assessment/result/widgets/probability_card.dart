@@ -34,7 +34,7 @@ class _ProbabilityCardState extends State<ProbabilityCard> {
   @override
   void initState() {
     super.initState();
-    _expanded = widget.highlight;
+    _expanded = false;
   }
 
   @override
