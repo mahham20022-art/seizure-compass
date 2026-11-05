@@ -77,7 +77,7 @@ class SeizureScoringEngine {
     for (final option in investigationOptions) {
       final r = input.investigations[option.key] ?? InvestigationResult.notDone;
       final w = investigationWeights[option.key]?[r];
-      if (w != null) items.add(('${option.label}: ${option.labelFor(r).toLowerCase()}', w));
+      if (w != null) items.add(('${option.label}: ${option.labelFor(r)}', w));
     }
 
     // ---- damping within correlated groups -------------------------------

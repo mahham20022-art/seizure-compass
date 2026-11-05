@@ -163,7 +163,7 @@ class ResultScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.s6),
                   const SectionHeader(kicker: 'Validated score', title: 'Calgary Syncope–Seizure Score'),
                   const SizedBox(height: AppSpacing.s4),
-                  _CalgaryCard(score: result.calgary),
+                  _CalgaryCard(score: result.calgary, cardiac: result.hasCardiacFlag),
                   if (result.lateralization.side != null || result.lateralization.conflict) ...[
                     const SizedBox(height: AppSpacing.s6),
                     const SectionHeader(kicker: 'Lateralization', title: 'Hemisphere of onset'),
@@ -511,8 +511,9 @@ class _GradeChip extends StatelessWidget {
 }
 
 class _CalgaryCard extends StatelessWidget {
-  const _CalgaryCard({required this.score});
+  const _CalgaryCard({required this.score, required this.cardiac});
   final CalgaryScore score;
+  final bool cardiac;
 
   @override
   Widget build(BuildContext context) {
@@ -567,6 +568,15 @@ class _CalgaryCard extends StatelessWidget {
                 ),
               ),
           ],
+          if (cardiac)
+            const Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                'Red flags present: arrhythmic syncope often causes jerks and injury, so a seizure-range score '
+                'does not exclude a cardiac cause.',
+                style: TextStyle(color: AppColors.danger, fontSize: 12.5, height: 1.4, fontWeight: FontWeight.w600),
+              ),
+            ),
           const SizedBox(height: 10),
           const Text(
             'Sheldon et al., JACC 2002: 94% sensitivity and 94% specificity for seizure vs syncope in the derivation '
