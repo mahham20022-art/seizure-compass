@@ -32,6 +32,14 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
+  <link rel="canonical" href="https://compass.thetract.org/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Seizure Compass — Navigate. Differentiate. Localize.">
+  <meta property="og:description" content="Free decision support for a witnessed paroxysmal event: epileptic seizure, PNES, syncope or another mimic, with a probable lobe of onset. For clinicians and trainees.">
+  <meta property="og:url" content="https://compass.thetract.org/">
+  <meta property="og:image" content="https://compass.thetract.org/icons/Icon-512.png">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Seizure Compass", "url": "https://compass.thetract.org/", "applicationCategory": "MedicalApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic, and suggests a lobe of onset. Heuristic decision support for clinicians, not validated.", "author": {"@type": "Person", "name": "Dr Mohamed Najm", "url": "https://thetract.org/about/", "sameAs": ["https://orcid.org/0009-0001-5506-2757", "https://www.linkedin.com/in/dr-mohamed-najm-aldeen-aa6452135"]}, "publisher": {"@type": "Organization", "name": "The Tract · Independent Neurology Press", "url": "https://thetract.org/"}}</script>
   <title>Seizure Compass — Navigate. Differentiate. Localize.</title>
   <link rel="manifest" href="manifest.json">
 
@@ -62,6 +70,11 @@
   </style>
 </head>
 <body>
+  <noscript>
+    <h1>Seizure Compass</h1>
+    <p>Free decision support for clinicians and trainees reasoning through a witnessed paroxysmal event. It weighs witnessed features toward an epileptic seizure, psychogenic non-epileptic seizure (PNES), syncope or another mimic, shows which findings pushed the result each way, and suggests a probable lobe of onset when a focal epileptic mechanism is likely. Heuristic and not validated; not a diagnostic device. Part of <a href="https://thetract.org/">The Tract</a>, by Dr Mohamed Najm.</p>
+    <p>Seizure Compass needs JavaScript to run.</p>
+  </noscript>
   <div id="splash"><div class="mark"></div></div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
@@ -80,6 +93,10 @@
       }
     });
   </script>
+  <script>
+    window.goatcounter = { path: function (p) { return 'compass' + (p === '/' ? '/' : p); } };
+  </script>
+  <script data-goatcounter="https://naaajm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

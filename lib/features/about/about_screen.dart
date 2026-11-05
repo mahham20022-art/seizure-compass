@@ -133,6 +133,30 @@ class AboutScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
+                  const SectionHeader(kicker: 'Author', title: 'Who made it'),
+                  const SizedBox(height: AppSpacing.s3),
+                  const GlassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Dr Mohamed Najm',
+                          style: TextStyle(color: AppColors.text, fontSize: 15, fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'MBBS · FEBN · PGDip EM · MRCEM (Secondary)\nNeurologist in neurocritical care and neurological emergencies',
+                          style: TextStyle(color: AppColors.muted, fontSize: 12.5, height: 1.45),
+                        ),
+                        SizedBox(height: AppSpacing.s3),
+                        _LinkRow(label: 'Website', text: 'thetract.org', url: 'https://thetract.org/'),
+                        _LinkRow(label: 'LinkedIn', text: 'linkedin.com/in/dr-mohamed-najm-aldeen', url: 'https://www.linkedin.com/in/dr-mohamed-najm-aldeen-aa6452135'),
+                        _LinkRow(label: 'GitHub', text: 'github.com/mahham20022-art', url: 'https://github.com/mahham20022-art/seizure-compass'),
+                        _LinkRow(label: 'Also', text: 'Najm ICUCalc', url: 'https://icucalc.thetract.org/', last: true),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.s6),
                   const SectionHeader(kicker: 'References', title: 'Further reading'),
                   const SizedBox(height: AppSpacing.s3),
                   const GlassCard(
@@ -291,6 +315,42 @@ class ReportErrorButton extends StatelessWidget {
           style: TextStyle(color: AppColors.muted, fontSize: 12, height: 1.4),
         ),
       ],
+    );
+  }
+}
+
+/// A labelled external link (opens in a new tab on the web).
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({required this.label, required this.text, required this.url, this.last = false});
+
+  final String label;
+  final String text;
+  final String url;
+  final bool last;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: last ? 0 : 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 72,
+                child: Text(label, style: const TextStyle(color: AppColors.faint, fontSize: 12)),
+              ),
+              Expanded(
+                child: Text(text, style: const TextStyle(color: AppColors.brand3, fontSize: 13, fontWeight: FontWeight.w600)),
+              ),
+              const Icon(Icons.open_in_new_rounded, size: 14, color: AppColors.faint),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
