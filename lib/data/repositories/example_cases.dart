@@ -1,7 +1,7 @@
 import '../models/assessment_input.dart';
 import '../models/enums.dart';
 
-/// Worked examples reachable at /example/<id>. Teaching vignettes, not
+/// Worked examples reachable at `/example/<id>`. Teaching vignettes, not
 /// real patients.
 class ExampleCase {
   const ExampleCase(this.id, this.title, this.summary, this.build);
