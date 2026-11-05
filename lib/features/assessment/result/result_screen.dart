@@ -17,7 +17,6 @@ import '../../../data/models/enums.dart';
 import '../../../data/repositories/example_cases.dart';
 import '../../../domain/scoring/evidence_weights.dart';
 import '../../about/about_screen.dart';
-import 'widgets/probability_card.dart';
 
 Color categoryColor(EventCategory c) => switch (c) {
       EventCategory.epileptic => AppColors.epileptic,
@@ -129,17 +128,27 @@ class ResultScreen extends StatelessWidget {
                     style: const TextStyle(color: AppColors.muted, fontSize: 12, height: 1.45),
                   ),
                   const SizedBox(height: AppSpacing.s4),
-                  for (final entry in ordered) ...[
-                    ProbabilityCard(
-                      category: entry.key,
-                      probability: entry.value,
-                      color: categoryColor(entry.key),
-                      supporting: result.supportingFindings[entry.key] ?? const [],
-                      against: result.againstFindings[entry.key] ?? const [],
-                      highlight: entry.key == top,
+                  GlassCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final entry in ordered)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: ProbabilityBar(
+                              label: entry.key.label,
+                              value: entry.value,
+                              color: categoryColor(entry.key),
+                              highlight: entry.key == top,
+                            ),
+                          ),
+                        Text(
+                          'Prior ${ordered.map((e) => '${e.key.label} ${_pct(result.priors[e.key]!)}').join(' · ')}',
+                          style: const TextStyle(color: AppColors.faint, fontSize: 11.5, height: 1.4),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: AppSpacing.s3),
-                  ],
+                  ),
                   const SizedBox(height: AppSpacing.s4),
                   const SectionHeader(kicker: 'Rationale', title: 'Weight of evidence'),
                   const SizedBox(height: AppSpacing.s2),
@@ -367,7 +376,9 @@ class _EvidenceChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final active = contributions.where((c) => !c.isNeutral).take(12).toList();
+    final active = contributions.where((c) => !c.isNeutral).toList()
+      ..sort((a, b) => b.netToward(_pushes(b)).compareTo(a.netToward(_pushes(a))));
+    if (active.length > 12) active.removeRange(12, active.length);
     final neutral = contributions.where((c) => c.isNeutral).toList();
     if (active.isEmpty && neutral.isEmpty) {
       return const GlassCard(
