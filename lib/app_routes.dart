@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'data/models/enums.dart';
+import 'data/models/seizure_library_entry.dart';
+import 'data/repositories/example_cases.dart';
+import 'data/repositories/seizure_library_data.dart';
+import 'domain/scoring/seizure_scoring_engine.dart';
+import 'features/about/about_screen.dart';
+import 'features/assessment/assessment_wizard_screen.dart';
+import 'features/assessment/result/result_screen.dart';
+import 'features/home/home_screen.dart';
+import 'features/library/library_detail_screen.dart';
+import 'features/library/library_screen.dart';
+import 'features/localization/localization_screen.dart';
+import 'features/pearls/pearls_screen.dart';
+import 'features/search/search_screen.dart';
+
+/// URL routes. With the path URL strategy every screen has a shareable,
+/// indexable address, e.g. compass.thetract.org/atlas/juvenile-myoclonic-epilepsy.
+class AppRoutes {
+  AppRoutes._();
+
+  static const home = '/';
+  static const assess = '/assess';
+  static const localization = '/localization';
+  static const atlas = '/atlas';
+  static const history = '/history';
+  static const figures = '/figures';
+  static const pearls = '/pearls';
+  static const search = '/search';
+  static const about = '/about';
+  static const example = '/example';
+
+  static String exampleFor(ExampleCase c) => '$example/${c.id}';
+
+  static String slug(String s) => s
+      .toLowerCase()
+      .replaceAll(RegExp(r"[’'()]"), '')
+      .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+      .replaceAll(RegExp(r'^-+|-+$'), '');
+
+  static String atlasEntry(SeizureLibraryEntry e) => '$atlas/${slug(e.name)}';
+  static String localizationFor(LocalizationRegion r) => '$localization/${r.name}';
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    final uri = Uri.parse(settings.name ?? home);
+    final seg = uri.pathSegments.where((s) => s.isNotEmpty).toList();
+    Widget page;
+    var name = settings.name ?? home;
+    switch (seg.isEmpty ? '' : seg.first) {
+      case 'assess':
+        page = const AssessmentWizardScreen();
+      case 'localization':
+        final region = seg.length > 1
+            ? LocalizationRegion.values.where((r) => r.name == seg[1]).firstOrNull
+            : null;
+        page = LocalizationScreen(initialRegion: region);
+      case 'atlas':
+        final entry = seg.length > 1 ? seizureLibrary.where((e) => slug(e.name) == seg[1]).firstOrNull : null;
+        page = entry == null ? const LibraryScreen() : LibraryDetailScreen(entry: entry);
+        if (entry == null) name = atlas;
+      case 'history':
+        page = const LibraryScreen(initialTabIndex: 1);
+      case 'figures':
+        page = const LibraryScreen(initialTabIndex: 2);
+      case 'pearls':
+        page = const PearlsScreen();
+      case 'search':
+        page = const SearchScreen();
+      case 'about':
+        page = const AboutScreen();
+      case 'example':
+        final ex = seg.length > 1 ? exampleCases.where((c) => c.id == seg[1]).firstOrNull : null;
+        if (ex == null) {
+          page = const HomeScreen();
+          name = home;
+        } else {
+          page = ResultScreen(result: const SeizureScoringEngine().score(ex.build()), example: ex);
+        }
+      default:
+        page = const HomeScreen();
+        name = home;
+    }
+    return MaterialPageRoute(builder: (_) => page, settings: RouteSettings(name: name, arguments: settings.arguments));
+  }
+}

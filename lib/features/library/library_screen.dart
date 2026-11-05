@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radii.dart';
 import '../../core/widgets/app_background.dart';
@@ -7,7 +8,6 @@ import '../../core/widgets/section_header.dart';
 import '../../data/models/seizure_library_entry.dart';
 import '../../data/repositories/seizure_library_data.dart';
 import '../search/search_screen.dart';
-import 'library_detail_screen.dart';
 import 'widgets/history_tab.dart';
 import 'widgets/notable_figures_tab.dart';
 
@@ -157,9 +157,7 @@ class _EntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       hoverable: true,
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => LibraryDetailScreen(entry: entry)),
-      ),
+      onTap: () => Navigator.of(context).pushNamed(AppRoutes.atlasEntry(entry)),
       child: Row(
         children: [
           Expanded(

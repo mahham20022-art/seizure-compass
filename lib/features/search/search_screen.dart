@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../app_routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radii.dart';
 import '../../core/widgets/app_background.dart';
@@ -9,9 +10,6 @@ import '../../data/repositories/epilepsy_history_data.dart';
 import '../../data/repositories/localization_data.dart';
 import '../../data/repositories/notable_figures_data.dart';
 import '../../data/repositories/seizure_library_data.dart';
-import '../library/library_detail_screen.dart';
-import '../library/library_screen.dart';
-import '../localization/localization_screen.dart';
 import '../pearls/pearls_screen.dart';
 
 /// AppBar action that opens the global [SearchScreen] from anywhere in the
@@ -25,9 +23,7 @@ class SearchAction extends StatelessWidget {
     return IconButton(
       tooltip: 'Search',
       icon: const Icon(Icons.search_rounded),
-      onPressed: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const SearchScreen()),
-      ),
+      onPressed: () => Navigator.of(context).pushNamed(AppRoutes.search),
     );
   }
 }
@@ -91,9 +87,7 @@ List<_SearchResult> _buildIndex() {
       subtitle: entry.summary,
       tag: entry.category,
       searchText: entry.searchText,
-      onTap: (context) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => LibraryDetailScreen(entry: entry)),
-      ),
+      onTap: (context) => Navigator.of(context).pushNamed(AppRoutes.atlasEntry(entry)),
     ));
   }
 
@@ -119,9 +113,7 @@ List<_SearchResult> _buildIndex() {
       subtitle: info.typicalAura.isNotEmpty ? info.typicalAura.first : 'Localization reference',
       tag: 'Localization',
       searchText: searchText,
-      onTap: (context) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => LocalizationScreen(initialRegion: info.region)),
-      ),
+      onTap: (context) => Navigator.of(context).pushNamed(AppRoutes.localizationFor(info.region)),
     ));
   }
 
@@ -132,9 +124,7 @@ List<_SearchResult> _buildIndex() {
       subtitle: event.description,
       tag: event.era,
       searchText: '${event.era} ${event.title} ${event.description}'.toLowerCase(),
-      onTap: (context) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const LibraryScreen(initialTabIndex: 1)),
-      ),
+      onTap: (context) => Navigator.of(context).pushNamed(AppRoutes.history),
     ));
   }
 
@@ -145,9 +135,7 @@ List<_SearchResult> _buildIndex() {
       subtitle: figure.description,
       tag: figure.years,
       searchText: '${figure.name} ${figure.years} ${figure.description}'.toLowerCase(),
-      onTap: (context) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const LibraryScreen(initialTabIndex: 2)),
-      ),
+      onTap: (context) => Navigator.of(context).pushNamed(AppRoutes.figures),
     ));
   }
 

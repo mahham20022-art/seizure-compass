@@ -21,7 +21,7 @@ class Step5Investigations extends StatelessWidget {
         const SectionHeader(
           kicker: 'Step 5',
           title: 'Investigations',
-          subtitle: 'Enter any results already available. Leave as "Not done" otherwise.',
+          subtitle: 'Enter results you already have. Leave the rest as "Not done".',
         ),
         const SizedBox(height: AppSpacing.s5),
         GlassCard(
@@ -29,7 +29,7 @@ class Step5Investigations extends StatelessWidget {
             children: [
               for (final option in investigationOptions)
                 InvestigationResultSelector(
-                  label: option.label,
+                  option: option,
                   value: input.investigations[option.key]!,
                   onChanged: (v) => controller.update((i) => i.investigations[option.key] = v),
                 ),

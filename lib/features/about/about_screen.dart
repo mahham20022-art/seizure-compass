@@ -8,9 +8,10 @@ import '../../core/widgets/app_logo.dart';
 import '../../core/widgets/disclaimer_banner.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
+import '../../domain/scoring/evidence_weights.dart';
 
-const appVersion = '1.1.1';
-const appLastReviewed = '9 October 2026';
+const appVersion = '2.0.0';
+const appLastReviewed = '5 November 2026';
 const appContactEmail = 'contact@thetract.org';
 const appErrorReportSubject = 'Seizure Compass error report v$appVersion';
 const _errorReportBody = 'Screen (assessment, localization, atlas, pearls):\n'
@@ -84,18 +85,28 @@ class AboutScreen extends StatelessWidget {
                   const SectionHeader(kicker: 'Evidence basis', title: 'How the estimates are derived'),
                   const SizedBox(height: AppSpacing.s3),
                   const GlassCard(
-                    child: Text(
-                      'Probability weights and localization heuristics are built from '
-                      'widely taught seizure-semiology teaching points — features such as '
-                      "lateral tongue bite, forced eye closure, Todd's paralysis, "
-                      'post-ictal prolactin behavior, and lobe-specific aura/semiology '
-                      'patterns commonly referenced in neurology and emergency-medicine '
-                      'teaching (e.g. ILAE seizure classification and semiology glossary, '
-                      'and standard epilepsy/EEG textbooks). This is a transparent '
-                      'heuristic scoring model, not a validated, published clinical '
-                      'prediction rule — every weight and its rationale is visible in the '
-                      'source and on the result screen.',
-                      style: TextStyle(color: AppColors.text2, fontSize: 13.5, height: 1.55),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _Bullet('Differential: a naive-Bayes model. Each category starts from a prior set by the '
+                            'clinical setting (equal priors by default) and every finding adds a log-likelihood '
+                            'weight; a softmax turns the totals into probabilities.'),
+                        _Bullet('Weights are the editor\'s conservative reading of published sensitivity, specificity '
+                            'and likelihood ratios (for example pooled LR+ ≈ 5 for ictal eye closure; lateral tongue '
+                            'bite specificity ≈ 100% vs PNES; urinary incontinence LR+ ≈ 0.9). Each carries a grade: '
+                            'A meta-analysis, systematic review or validated score; B cohort or video-EEG series; '
+                            'C expert teaching.'),
+                        _Bullet('Correlated findings are damped: within a group (automatisms, convulsive signs, '
+                            'presyncope, PNES motor signs) only the strongest counts in full and the rest at half.'),
+                        _Bullet('Calgary Syncope–Seizure Score is computed exactly as published (Sheldon 2002) and shown '
+                            'separately: it is validated for seizure vs syncope, not PNES.'),
+                        _Bullet('Cardiac and neurological red flags (ESC 2018 high-risk features and others) are never '
+                            'averaged into the estimate; they are shown first.'),
+                        _Bullet('Lateralization uses approximate positive predictive values of lateralizing signs '
+                            '(Loddenkemper & Kotagal 2005), assuming left-hemisphere dominance.'),
+                        _Bullet('Localization weights and some category weights (grade C) remain teaching-based.',
+                            last: true),
+                      ],
                     ),
                   ),
                   const SizedBox(height: AppSpacing.s6),
@@ -105,7 +116,8 @@ class AboutScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _Bullet('Not prospectively or independently validated. The weights have not been tested against video-EEG-confirmed diagnoses.'),
+                        _Bullet('Not yet validated on patients. The weights are taken from published studies but the combined model has not been tested against video-EEG-confirmed diagnoses.'),
+                        _Bullet('Naive Bayes assumes findings are independent. They are not; damping reduces but does not remove overconfidence, so treat high percentages with caution.'),
                         _Bullet('Decision support only. It does not replace clinical judgement, a specialist opinion or video-EEG.'),
                         _Bullet('The output depends entirely on the quality of the witness account and the features you select.'),
                         _Bullet('Epileptic seizures and PNES can coexist; the tool cannot detect dual diagnosis.'),
@@ -159,42 +171,19 @@ class AboutScreen extends StatelessWidget {
                   const SizedBox(height: AppSpacing.s6),
                   const SectionHeader(kicker: 'References', title: 'Further reading'),
                   const SizedBox(height: AppSpacing.s3),
-                  const GlassCard(
+                  GlassCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _Reference(
+                        const _Reference(
                           'Updated classification of epileptic seizures: position paper of the '
                           'International League Against Epilepsy. Epilepsia. 2025. '
                           'doi:10.1111/epi.18338',
                         ),
-                        _Reference(
-                          'Fisher RS, Cross JH, French JA, et al. Operational classification '
-                          'of seizure types by the International League Against Epilepsy. '
-                          'Epilepsia. 2017;58(4):522-530.',
-                        ),
-                        _Reference(
-                          'Fisher RS, Cross JH, D\'Souza C, et al. Instruction manual for the '
-                          'ILAE 2017 operational classification of seizure types. Epilepsia. '
-                          '2017;58(4):531-542.',
-                        ),
-                        _Reference(
-                          'Blume WT, Lüders HO, Mizrahi E, et al. Glossary of descriptive '
-                          'terminology for ictal semiology: report of the ILAE task force on '
-                          'classification and terminology. Epilepsia. 2001;42(9):1212-1218.',
-                        ),
-                        _Reference(
-                          'LaFrance WC Jr, Baker GA, Duncan R, Goldstein LH, Reuber M. Minimum '
-                          'requirements for the diagnosis of psychogenic nonepileptic seizures: '
-                          'a staged approach. Epilepsia. 2013;54(11):2005-2018.',
-                        ),
-                        _Reference(
-                          'Engel J Jr, Pedley TA, eds. Epilepsy: A Comprehensive Textbook. '
-                          '2nd ed. Lippincott Williams & Wilkins.',
-                        ),
-                        _Reference(
-                          'Panayiotopoulos CP. A Clinical Guide to Epileptic Syndromes and '
-                          'their Treatment. Springer.',
+                        for (final r in references.values) _Reference(r),
+                        const _Reference(
+                          'Engel J Jr, Pedley TA, eds. Epilepsy: A Comprehensive Textbook. 2nd ed. '
+                          'Lippincott Williams & Wilkins.',
                           last: true,
                         ),
                       ],
@@ -207,6 +196,23 @@ class AboutScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _ChangelogEntry(
+                          version: '2.0.0',
+                          date: '5 November 2026',
+                          changes: [
+                            'New engine: naive-Bayes log-likelihood model with setting priors and damping of correlated signs.',
+                            'Weights re-derived from published data with an evidence grade and source for each.',
+                            'Corrected: ictal crying now favours PNES; urinary incontinence and a normal EEG no longer move the estimate; '
+                                'prolactin also rises after syncope; psychiatric history weighted down.',
+                            'Added: eyes closed, waxing–waning course, ictal recall, stertorous breathing, presyncopal prodrome, '
+                                'situational triggers, pallor, onset from sleep.',
+                            'Calgary Syncope–Seizure Score, cardiac and neurological red flags.',
+                            'Lateralizing signs with side, and a hemisphere estimate.',
+                            'Video-EEG and ECG results; EEG split into epileptiform vs non-specific.',
+                            'Weight-of-evidence chart, named patterns, worked examples, copyable summary.',
+                            'The Tract palette and typography, faster load, shareable URLs for every screen.',
+                          ],
+                        ),
                         _ChangelogEntry(
                           version: '1.1.1',
                           date: '9 October 2026',

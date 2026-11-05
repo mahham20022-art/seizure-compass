@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_radii.dart';
 
-/// Seizure Compass's own Material 3 dark theme: rich charcoal backgrounds,
-/// deep violet / electric purple / neon magenta brand accents, calm rounded
-/// cards — a deliberate departure from Najm ICUCalc's cyan identity.
+/// Material 3 dark theme in The Tract palette: ink surfaces, copper accent,
+/// Newsreader serif for display text and Source Sans 3 for the interface.
 class AppTheme {
   AppTheme._();
 
@@ -21,14 +20,17 @@ class AppTheme {
         onSurface: AppColors.text,
         onPrimary: AppColors.brandInk,
       ),
-      fontFamily: 'Inter',
+      fontFamily: 'SourceSans',
     );
 
     return base.copyWith(
-      textTheme: base.textTheme.apply(
-        bodyColor: AppColors.text,
-        displayColor: AppColors.text,
-      ),
+      textTheme: base.textTheme
+          .apply(bodyColor: AppColors.text, displayColor: AppColors.text)
+          .copyWith(
+            headlineLarge: const TextStyle(fontFamily: 'Newsreader', fontWeight: FontWeight.w600),
+            headlineMedium: const TextStyle(fontFamily: 'Newsreader', fontWeight: FontWeight.w600),
+            headlineSmall: const TextStyle(fontFamily: 'Newsreader', fontWeight: FontWeight.w600),
+          ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -36,9 +38,9 @@ class AppTheme {
         foregroundColor: AppColors.text,
         titleTextStyle: TextStyle(
           color: AppColors.text,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.2,
+          fontSize: 20,
+          fontFamily: 'Newsreader',
+          fontWeight: FontWeight.w600,
         ),
       ),
       cardTheme: CardThemeData(

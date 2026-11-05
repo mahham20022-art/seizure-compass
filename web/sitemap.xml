@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://compass.thetract.org/</loc><lastmod>2026-11-05</lastmod><priority>1.0</priority></url>
+  <url><loc>https://compass.thetract.org/assess</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/atlas</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/localization</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/pearls</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/about</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/example/convulsive-seizure</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/example/pnes</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/example/convulsive-syncope</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
+  <url><loc>https://compass.thetract.org/example/cardiac-red-flag</loc><lastmod>2026-11-05</lastmod><priority>0.7</priority></url>
 </urlset>

@@ -25,14 +25,20 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Build fonts
+        run: pip install --quiet --break-system-packages fonttools brotli && python tool/build_fonts.py
+
       - name: Install dependencies
         run: flutter pub get
 
       - name: Analyze
         run: flutter analyze
 
+      - name: Test
+        run: flutter test
+
       - name: Build web (release)
-        run: flutter build web --release --base-href /
+        run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

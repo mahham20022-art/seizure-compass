@@ -5,7 +5,7 @@ import '../theme/app_radii.dart';
 /// Small status pill — "Heuristic decision support · not validated" on
 /// the home hero, reusable anywhere else a quick evidence badge is useful.
 class EvidenceBadge extends StatelessWidget {
-  const EvidenceBadge({super.key, this.label = 'Heuristic decision support · not validated'});
+  const EvidenceBadge({super.key, this.label = 'Decision support · not yet validated on patients'});
 
   final String label;
 
@@ -21,7 +21,7 @@ class EvidenceBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.verified_rounded, color: AppColors.brand, size: 14),
+          const Icon(Icons.info_outline_rounded, color: AppColors.brand, size: 14),
           const SizedBox(width: 6),
           Text(
             label,

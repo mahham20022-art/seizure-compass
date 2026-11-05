@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'app_routes.dart';
 import 'core/theme/app_theme.dart';
-import 'features/splash/splash_screen.dart';
 
 class SeizureCompassApp extends StatelessWidget {
   const SeizureCompassApp({super.key});
@@ -13,7 +13,7 @@ class SeizureCompassApp extends StatelessWidget {
       theme: AppTheme.dark,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
-      home: const SplashScreen(),
+      onGenerateRoute: AppRoutes.onGenerateRoute,
     );
   }
 }

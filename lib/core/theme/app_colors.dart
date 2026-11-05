@@ -1,44 +1,41 @@
 import 'package:flutter/material.dart';
 
-/// Seizure Compass's own neuro-violet palette — a deliberate, complete
-/// departure from Najm ICUCalc's cyan "monitor-blue" identity. Built around
-/// deep violet, electric purple and neon magenta on a rich charcoal ground,
-/// evoking neural activity, EEG traces and electric impulses rather than an
-/// ICU monitor.
+/// The Tract palette (ink #1B2636, copper #B66C4E, paper #F4F0E7) adapted
+/// for a dark clinical UI. Compass lives at compass.thetract.org and should
+/// read as part of the same press.
 class AppColors {
   AppColors._();
 
-  static const ink950 = Color(0xFF111827); // background
-  static const ink900 = Color(0xFF161F2C); // surface / drawer
-  static const ink800 = Color(0xFF1B2433); // cards
-  static const ink700 = Color(0xFF1F2937); // secondary background / tracks
-  static const ink600 = Color(0xFF2A3648); // hover surface
-  static const ink500 = Color(0xFF34435C); // lightest ink surface
+  static const ink950 = Color(0xFF10171F); // background
+  static const ink900 = Color(0xFF151E29); // surface / drawer
+  static const ink800 = Color(0xFF1B2636); // cards (The Tract ink)
+  static const ink700 = Color(0xFF223044); // tracks / secondary surface
+  static const ink600 = Color(0xFF2A3A50); // hover surface
+  static const ink500 = Color(0xFF34465E);
 
-  static const line = Color(0xFF2A3348);
-  static const line2 = Color(0xFF4C3E73);
+  static const line = Color(0xFF29364A);
+  static const line2 = Color(0xFF3B4A5F);
 
-  static const text = Color(0xFFF8FAFC);
-  static const text2 = Color(0xFFCBD5E1);
-  static const muted = Color(0xFF94A3B8);
-  static const faint = Color(0xFF64748B);
+  static const text = Color(0xFFF4F0E7); // paper
+  static const text2 = Color(0xFFD9D3C7);
+  static const muted = Color(0xFFA0A8B2);
+  static const faint = Color(0xFF76808C);
 
-  static const brand = Color(0xFF8B5CF6); // Electric Purple
-  static const brand2 = Color(0xFF6D28D9); // Deep Violet
-  static const brand3 = Color(0xFF7C3AED); // vivid violet — primary interactive
+  static const brand = Color(0xFFD08A6C); // copper, lightened for dark ground
+  static const brand2 = Color(0xFF9A5A40); // deep copper
+  static const brand3 = Color(0xFFB66C4E); // The Tract copper — primary buttons
   static const brandInk = Color(0xFFFFFFFF);
 
-  static const ok = Color(0xFF10B981); // Emerald
-  static const warn = Color(0xFFF59E0B); // Amber
-  static const danger = Color(0xFFEF4444); // Rose red
-  static const pulse = Color(0xFFEC4899); // Neon magenta
+  static const ok = Color(0xFF6FBF8E);
+  static const warn = Color(0xFFE2A84B);
+  static const danger = Color(0xFFE8685A);
+  static const pulse = brand;
 
-  /// Category colors used consistently across probability bars, chips and
-  /// library tags so a category is always recognizable at a glance.
-  static const epileptic = brand3; // Purple
-  static const pnes = Color(0xFFEC4899); // Neon Magenta
-  static const syncope = warn; // Amber
-  static const otherMimic = muted; // Slate gray
+  /// Category colours, kept distinct from each other and from red flags.
+  static const epileptic = Color(0xFFD9946F); // copper
+  static const pnes = Color(0xFF7FB2D6); // steel blue
+  static const syncope = Color(0xFFE2C062); // gold
+  static const otherMimic = Color(0xFFA0A8B2); // slate
 
   static const List<Color> backgroundGradient = [ink900, ink950];
 }

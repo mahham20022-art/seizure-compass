@@ -4,6 +4,9 @@ on:
   push:
     branches: ['claude/**']
 
+permissions:
+  contents: write
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -13,6 +16,24 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Build fonts
+        run: pip install --quiet --break-system-packages fonttools brotli && python tool/build_fonts.py
       - run: flutter pub get
       - run: flutter analyze
-      - run: flutter build web --release --base-href /
+      - run: flutter test
+      - run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html
+      - name: Size report
+        run: du -sh build/web && ls -la build/web assets/fonts && du -sh build/web/canvaskit || true
+      - name: Preview screenshots
+        run: |
+          python3 tool/serve.py build/web 8080 &
+          sleep 2
+          mkdir -p /tmp/pw && (cd /tmp/pw && npm init -y >/dev/null && npm i --silent playwright-core@1.56.1)
+          NODE_PATH=/tmp/pw/node_modules cp tool/shots.mjs /tmp/pw/shots.mjs
+          (cd /tmp/pw && node shots.mjs) && mv /tmp/pw/shots ./shots
+      - name: Publish screenshots to preview-shots branch
+        run: |
+          git config user.name "ci" && git config user.email "ci@users.noreply.github.com"
+          mkdir /tmp/out && cp -r shots /tmp/out/ && echo "${GITHUB_SHA}" > /tmp/out/SHA
+          git checkout --orphan preview-shots && git rm -rfq . && cp -r /tmp/out/* . 
+          git add shots SHA && git commit -qm "Preview shots ${GITHUB_SHA}" && git push -f origin preview-shots

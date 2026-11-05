@@ -20,8 +20,8 @@ class Step4Postictal extends StatelessWidget {
       children: [
         const SectionHeader(
           kicker: 'Step 4',
-          title: 'Postictal features',
-          subtitle: 'What happened in the minutes immediately after the event?',
+          title: 'After the event',
+          subtitle: 'Breathing, recovery and what the patient remembers.',
         ),
         const SizedBox(height: AppSpacing.s5),
         GlassCard(

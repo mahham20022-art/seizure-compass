@@ -1,9 +1,11 @@
 import 'enums.dart';
+import 'finding_keys.dart';
 
-/// Mutable working state for the 5-step assessment wizard. A single instance
-/// is carried through the flow and read by [SeizureScoringEngine] at the end.
+/// Mutable working state for the assessment wizard. A single instance is
+/// carried through the flow and read by [SeizureScoringEngine] at the end.
 class AssessmentInput {
   // Step 1 — Patient
+  ClinicalSetting setting = ClinicalSetting.unspecified;
   int? ageYears;
   Sex? sex;
   bool? knownEpilepsy;
@@ -15,29 +17,46 @@ class AssessmentInput {
   bool? drugUse;
   bool? fever;
 
-  // Step 2 — Aura (keys from [auraOptions])
+  /// Cardiac and neurological red flags (keys from [cardiacFlagOptions]
+  /// and [neuroFlagOptions]).
+  final Set<String> redFlags = {};
+
+  // Step 2 — Circumstances, prodrome and aura
+  final Set<String> prodromeFindings = {};
   final Set<String> auraFindings = {};
 
-  // Step 3 — Semiology (keys from [semiologyOptions])
+  // Step 3 — Semiology
   final Set<String> semiologyFindings = {};
   TongueBiteLocation tongueBite = TongueBiteLocation.none;
   SeizureDuration? duration;
 
-  // Step 4 — Postictal (keys from [postictalOptions])
+  /// Lateralizing sign key → side on which it was observed.
+  final Map<String, Side> lateralSigns = {};
+
+  // Step 4 — Postictal
   final Set<String> postictalFindings = {};
 
-  // Step 5 — Investigations (keys from [investigationOptions])
+  // Step 5 — Investigations
   final Map<String, InvestigationResult> investigations = {
-    for (final k in ['eeg', 'mri', 'ct', 'glucose', 'electrolytes', 'ck', 'prolactin', 'lactate'])
-      k: InvestigationResult.notDone,
+    for (final o in investigationOptions) o.key: InvestigationResult.notDone,
   };
 
   bool has(String key) =>
+      prodromeFindings.contains(key) ||
       auraFindings.contains(key) ||
       semiologyFindings.contains(key) ||
       postictalFindings.contains(key);
 
+  /// Every checked finding key across steps 2–4.
+  Iterable<String> get allFindings sync* {
+    yield* prodromeFindings;
+    yield* auraFindings;
+    yield* semiologyFindings;
+    yield* postictalFindings;
+  }
+
   void reset() {
+    setting = ClinicalSetting.unspecified;
     ageYears = null;
     sex = null;
     knownEpilepsy = null;
@@ -48,10 +67,13 @@ class AssessmentInput {
     alcohol = null;
     drugUse = null;
     fever = null;
+    redFlags.clear();
+    prodromeFindings.clear();
     auraFindings.clear();
     semiologyFindings.clear();
     tongueBite = TongueBiteLocation.none;
     duration = null;
+    lateralSigns.clear();
     postictalFindings.clear();
     investigations.updateAll((key, value) => InvestigationResult.notDone);
   }

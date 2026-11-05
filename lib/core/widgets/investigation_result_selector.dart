@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import '../../data/models/enums.dart';
+import '../../data/models/finding_keys.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radii.dart';
 
-/// Three-way Not done / Normal / Abnormal selector used on the
-/// Investigations step.
+/// Segmented result selector for one investigation on step 5.
 class InvestigationResultSelector extends StatelessWidget {
   const InvestigationResultSelector({
     super.key,
-    required this.label,
+    required this.option,
     required this.value,
     required this.onChanged,
   });
 
-  final String label;
+  final InvestigationOption option;
   final InvestigationResult value;
   final ValueChanged<InvestigationResult> onChanged;
+
+  static Color _color(InvestigationResult r) => switch (r) {
+        InvestigationResult.notDone => AppColors.faint,
+        InvestigationResult.normal => AppColors.ok,
+        InvestigationResult.nonSpecific => AppColors.warn,
+        InvestigationResult.abnormal => AppColors.danger,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +31,14 @@ class InvestigationResultSelector extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: AppColors.text2, fontSize: 14, fontWeight: FontWeight.w600)),
+          Text(option.label, style: const TextStyle(color: AppColors.text2, fontSize: 14, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Row(
             children: [
-              _seg('Not done', InvestigationResult.notDone, AppColors.faint),
-              const SizedBox(width: 8),
-              _seg('Normal', InvestigationResult.normal, AppColors.ok),
-              const SizedBox(width: 8),
-              _seg('Abnormal', InvestigationResult.abnormal, AppColors.danger),
+              for (var k = 0; k < option.results.length; k++) ...[
+                if (k > 0) const SizedBox(width: 8),
+                _seg(option.labelFor(option.results[k]), option.results[k]),
+              ],
             ],
           ),
         ],
@@ -40,26 +46,34 @@ class InvestigationResultSelector extends StatelessWidget {
     );
   }
 
-  Widget _seg(String text, InvestigationResult option, Color activeColor) {
-    final active = value == option;
+  Widget _seg(String text, InvestigationResult r) {
+    final active = value == r;
+    final c = _color(r);
     return Expanded(
-      child: InkWell(
-        onTap: () => onChanged(option),
-        borderRadius: BorderRadius.circular(AppRadii.sm),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: active ? activeColor.withValues(alpha: 0.16) : AppColors.ink800,
-            borderRadius: BorderRadius.circular(AppRadii.sm),
-            border: Border.all(color: active ? activeColor : AppColors.line),
-          ),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: active ? activeColor : AppColors.muted,
-              fontSize: 12,
-              fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+      child: Semantics(
+        button: true,
+        selected: active,
+        label: '${option.label}: $text',
+        child: InkWell(
+          onTap: () => onChanged(r),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 44),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: active ? c.withValues(alpha: 0.16) : AppColors.ink800,
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+              border: Border.all(color: active ? c : AppColors.line),
+            ),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: active ? c : AppColors.muted,
+                fontSize: 12,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+              ),
             ),
           ),
         ),
