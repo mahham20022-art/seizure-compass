@@ -11,6 +11,7 @@ const routes = [
   ['ex-cardiac', '/example/cardiac-red-flag'],
   ['ex-pnes', '/example/pnes'],
   ['atlas', '/atlas'],
+  ['atlas-jme', '/atlas/juvenile-myoclonic-epilepsy/'],
   ['about', '/about'],
 ];
 fs.mkdirSync('shots', { recursive: true });

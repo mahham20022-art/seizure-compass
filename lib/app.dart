@@ -14,6 +14,7 @@ class SeizureCompassApp extends StatelessWidget {
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
       onGenerateRoute: AppRoutes.onGenerateRoute,
+      onGenerateInitialRoutes: AppRoutes.initialRoutes,
     );
   }
 }

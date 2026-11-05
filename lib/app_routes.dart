@@ -41,6 +41,17 @@ class AppRoutes {
   static String atlasEntry(SeizureLibraryEntry e) => '$atlas/${slug(e.name)}';
   static String localizationFor(LocalizationRegion r) => '$localization/${r.name}';
 
+  /// Builds the back stack for a deep link (e.g. /atlas/x → home, atlas,
+  /// entry), ignoring the trailing slash the static hosting adds.
+  static List<Route<dynamic>> initialRoutes(String initial) {
+    final parts = initial.split('/').where((p) => p.isNotEmpty).toList();
+    final routes = <Route<dynamic>>[onGenerateRoute(const RouteSettings(name: home))];
+    if (parts.isEmpty) return routes;
+    if (parts.length > 1 && parts.first == 'atlas') routes.add(onGenerateRoute(const RouteSettings(name: atlas)));
+    routes.add(onGenerateRoute(RouteSettings(name: '/${parts.join('/')}')));
+    return routes;
+  }
+
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     final uri = Uri.parse(settings.name ?? home);
     final seg = uri.pathSegments.where((s) => s.isNotEmpty).toList();

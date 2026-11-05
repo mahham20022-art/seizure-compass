@@ -21,7 +21,7 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
-      - run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html
+      - run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html && python3 tool/spa_routes.py build/web
       - name: Size report
         run: du -sh build/web && ls -la build/web assets/fonts && du -sh build/web/canvaskit || true
       - name: Preview screenshots

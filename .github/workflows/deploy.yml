@@ -38,7 +38,7 @@ jobs:
         run: flutter test
 
       - name: Build web (release)
-        run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html
+        run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html && python3 tool/spa_routes.py build/web
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
