@@ -19,8 +19,8 @@
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#111827">
-  <meta name="description" content="Seizure Compass — navigate, differentiate and localize seizure presentations. Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic. Heuristic decision support, not validated.">
+  <meta name="theme-color" content="#10171F">
+  <meta name="description" content="Seizure Compass — navigate, differentiate and localize seizure presentations. Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic. Naive-Bayes decision support with published weights, the Calgary score and cardiac red flags; not yet validated on patients.">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -47,7 +47,7 @@
     html, body {
       height: 100%;
       margin: 0;
-      background: #111827;
+      background: #10171F;
     }
     #splash {
       position: fixed;
@@ -55,27 +55,33 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(1200px 700px at 60% -10%, rgba(139,92,246,.16), transparent 60%), #111827;
+      background: radial-gradient(1200px 700px at 60% -10%, rgba(182,108,78,.14), transparent 60%), #10171F;
+      flex-direction: column; gap: 18px; font-family: Georgia, 'Times New Roman', serif; color: #F4F0E7;
       transition: opacity .4s ease;
       z-index: 9999;
     }
     #splash.hide { opacity: 0; pointer-events: none; }
     #splash .mark {
       width: 64px; height: 64px; border-radius: 50%;
-      border: 2px solid #4c3e73;
-      border-top-color: #ec4899;
+      width: 40px; height: 40px;
+      border: 2px solid #29364A;
+      border-top-color: #B66C4E;
       animation: spin 1s linear infinite;
     }
+    #splash .word { font-size: 30px; letter-spacing: .2px; }
+    #splash .word i { color: #D08A6C; }
+    #splash .sub { font: 13px system-ui, sans-serif; color: #A0A8B2; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <noscript>
     <h1>Seizure Compass</h1>
-    <p>Free decision support for clinicians and trainees reasoning through a witnessed paroxysmal event. It weighs witnessed features toward an epileptic seizure, psychogenic non-epileptic seizure (PNES), syncope or another mimic, shows which findings pushed the result each way, and suggests a probable lobe of onset when a focal epileptic mechanism is likely. Heuristic and not validated; not a diagnostic device. Part of <a href="https://thetract.org/">The Tract</a>, by Dr Mohamed Najm.</p>
+    <p>Free decision support for clinicians and trainees reasoning through a witnessed paroxysmal event. It weighs witnessed features toward an epileptic seizure, psychogenic non-epileptic seizure (PNES), syncope or another mimic, shows which findings pushed the result each way, and suggests a probable lobe of onset when a focal epileptic mechanism is likely. Weights come from published studies (with an evidence grade for each) and the validated Calgary Syncope–Seizure Score is included; the combined model is not yet validated on patients and is not a diagnostic device. Part of <a href="https://thetract.org/">The Tract</a>, by Dr Mohamed Najm.</p>
+    <p>Worked examples: <a href="/example/convulsive-seizure">convulsion from sleep</a>, <a href="/example/pnes">prolonged event with eyes closed</a>, <a href="/example/convulsive-syncope">faint with jerks</a>, <a href="/example/cardiac-red-flag">collapse while running</a>.</p>
     <p>Seizure Compass needs JavaScript to run.</p>
   </noscript>
-  <div id="splash"><div class="mark"></div></div>
+  <div id="splash"><div class="word">Seizure <i>Compass</i></div><div class="mark"></div><div class="sub">The Tract · loading the engine…</div></div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
