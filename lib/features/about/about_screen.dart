@@ -154,7 +154,7 @@ class AboutScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Dr Mohamed Najm',
+                          'Dr Mohamed Najm Aldeen Alameen',
                           style: TextStyle(color: AppColors.text, fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         SizedBox(height: 2),
@@ -163,6 +163,7 @@ class AboutScreen extends StatelessWidget {
                           style: TextStyle(color: AppColors.muted, fontSize: 12.5, height: 1.45),
                         ),
                         SizedBox(height: AppSpacing.s3),
+                        _LinkRow(label: 'ORCID', text: '0009-0001-5506-2757', url: 'https://orcid.org/0009-0001-5506-2757'),
                         _LinkRow(label: 'Website', text: 'thetract.org', url: 'https://thetract.org/'),
                         _LinkRow(label: 'LinkedIn', text: 'linkedin.com/in/dr-mohamed-najm-aldeen', url: 'https://www.linkedin.com/in/dr-mohamed-najm-aldeen-aa6452135'),
                         _LinkRow(label: 'GitHub', text: 'github.com/mahham20022-art', url: 'https://github.com/mahham20022-art/seizure-compass'),
