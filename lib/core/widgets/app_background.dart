@@ -15,7 +15,7 @@ class AppBackground extends StatelessWidget {
         gradient: RadialGradient(
           center: Alignment(0.6, -1.0),
           radius: 1.4,
-          colors: [Color(0x1FB66C4E), AppColors.ink950],
+          colors: [Color(0x268B5CF6), AppColors.ink950],
           stops: [0.0, 0.6],
         ),
       ),
