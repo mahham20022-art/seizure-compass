@@ -65,13 +65,22 @@ class HomeScreen extends StatelessWidget {
                         LayoutBuilder(
                           builder: (context, constraints) {
                             final columns = constraints.maxWidth >= 760 ? 4 : 2;
-                            return GridView.count(
-                              crossAxisCount: columns,
+                            const gap = AppSpacing.s3;
+                            final cardWidth = (constraints.maxWidth - gap * (columns - 1)) / columns;
+                            // Phones keep the near-square card. On tablets the two-column card is wide,
+                            // so a square would be mostly empty: cap its height to what the content needs.
+                            final cardHeight = columns == 2 && cardWidth >= 280
+                                ? 210.0
+                                : cardWidth / (columns == 4 ? 0.85 : 0.92);
+                            return GridView(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: columns,
+                                mainAxisSpacing: gap,
+                                crossAxisSpacing: gap,
+                                mainAxisExtent: cardHeight,
+                              ),
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              mainAxisSpacing: AppSpacing.s3,
-                              crossAxisSpacing: AppSpacing.s3,
-                              childAspectRatio: columns == 4 ? 0.85 : 0.92,
                               children: [
                                 NavCard(
                                   icon: Icons.fact_check_rounded,

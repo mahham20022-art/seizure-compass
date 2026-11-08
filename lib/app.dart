@@ -15,6 +15,16 @@ class SeizureCompassApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       onGenerateRoute: AppRoutes.onGenerateRoute,
       onGenerateInitialRoutes: AppRoutes.initialRoutes,
+      // Big monitors are read from further away: lift text slightly there,
+      // on top of whatever text size the user has chosen. Phones and tablets are unchanged.
+      builder: (context, child) {
+        final mq = MediaQuery.of(context);
+        if (mq.size.width < 1500) return child!;
+        return MediaQuery(
+          data: mq.copyWith(textScaler: TextScaler.linear(mq.textScaler.scale(1.0) * 1.08)),
+          child: child!,
+        );
+      },
     );
   }
 }
