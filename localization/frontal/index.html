@@ -43,6 +43,20 @@
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Seizure Compass", "url": "https://compass.thetract.org/", "applicationCategory": "MedicalApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic, with published weights, the Calgary Syncope–Seizure Score, cardiac red flags and lateralizing signs. Decision support for clinicians, not yet validated on patients.", "author": {"@type": "Person", "@id": "https://thetract.org/about/#editor", "name": "Mohamed Najm Aldeen Alameen", "alternateName": ["Dr Mohamed Najm", "Mohamed Najm", "Mohamed Najm Aldeen Alameen Abdalrahman"], "jobTitle": "Neurologist", "url": "https://thetract.org/about/", "identifier": {"@type": "PropertyValue", "propertyID": "ORCID", "value": "0009-0001-5506-2757"}, "sameAs": ["https://orcid.org/0009-0001-5506-2757", "https://www.linkedin.com/in/dr-mohamed-najm-aldeen-aa6452135", "https://github.com/mahham20022-art"]}, "publisher": {"@type": "Organization", "name": "The Tract · Independent Neurology Press", "url": "https://thetract.org/"}, "creator": {"@id": "https://thetract.org/about/#editor"}}</script>
   <title>Frontal onset — Localization · Seizure Compass</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    // Start the heavy downloads now, in parallel, instead of one after another when the loader asks.
+    // Mirrors flutter.js: Chromium builds take the smaller chromium/ CanvasKit, everything else the full one.
+    (function () {
+      var blink = navigator.vendor === 'Google Inc.' || navigator.userAgent.indexOf('Edg/') > -1;
+      var chromium = blink && typeof ImageDecoder !== 'undefined' && typeof Intl.v8BreakIterator !== 'undefined' && typeof Intl.Segmenter !== 'undefined';
+      var ck = 'canvaskit/' + (chromium ? 'chromium/' : '') + 'canvaskit.wasm';
+      [['main.dart.js', 'script'], [ck, 'fetch']].forEach(function (x) {
+        var l = document.createElement('link'); l.rel = 'preload'; l.href = x[0]; l.as = x[1];
+        if (x[1] === 'fetch') l.crossOrigin = 'anonymous';
+        document.head.appendChild(l);
+      });
+    })();
+  </script>
 
   <style>
     html, body {
@@ -51,28 +65,42 @@
       background: #111827;
     }
     #splash {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(1200px 700px at 60% -10%, rgba(139,92,246,.16), transparent 60%), #111827;
-      flex-direction: column; gap: 18px; font-family: Georgia, 'Times New Roman', serif; color: #F8FAFC;
+      position: fixed; inset: 0; z-index: 9999; overflow-y: auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      padding: max(28px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom));
+      background: radial-gradient(1200px 700px at 60% -10%, rgba(139,92,246,.18), transparent 60%), #111827;
+      color: #F8FAFC; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; box-sizing: border-box;
       transition: opacity .4s ease;
-      z-index: 9999;
     }
     #splash.hide { opacity: 0; pointer-events: none; }
-    #splash .mark {
-      width: 64px; height: 64px; border-radius: 50%;
-      width: 40px; height: 40px;
-      border: 2px solid #4c3e73;
-      border-top-color: #ec4899;
-      animation: spin 1s linear infinite;
-    }
-    #splash .word { font-size: 30px; letter-spacing: .2px; }
+    #splash .word { font: 30px/1.1 Georgia, 'Times New Roman', serif; letter-spacing: .2px; }
     #splash .word i { color: #A78BFA; }
-    #splash .sub { font: 13px system-ui, sans-serif; color: #94A3B8; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    #splash .load { width: min(340px, 86vw); }
+    #splash .bar { height: 4px; border-radius: 4px; background: #2a2340; overflow: hidden; }
+    #splash .bar b { display: block; height: 100%; width: 4%; border-radius: 4px; background: linear-gradient(90deg, #8B5CF6, #EC4899); transition: width .5s ease; }
+    #splash .sub { margin-top: 8px; font-size: 12.5px; color: #94A3B8; display: flex; justify-content: space-between; }
+    #splash .card {
+      width: min(400px, 92vw); box-sizing: border-box; margin-top: 10px; padding: 18px 18px 16px;
+      background: rgba(30, 27, 52, .78); border: 1px solid #3b2f62; border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+    #splash .kick { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A78BFA; font-weight: 700; }
+    #splash .kick span:last-child { color: #F9A8D4; letter-spacing: .06em; }
+    #splash .q { font: 19px/1.38 Georgia, 'Times New Roman', serif; margin: 12px 0 16px; min-height: 78px; }
+    #splash .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #splash button {
+      font: 600 15px system-ui, -apple-system, sans-serif; color: #F8FAFC; cursor: pointer;
+      padding: 13px 10px; border-radius: 12px; border: 1px solid #4c3e73; background: #1f1a38;
+      -webkit-tap-highlight-color: transparent; transition: transform .08s;
+    }
+    #splash button:active { transform: scale(.97); }
+    #splash button.right { background: #0f3d33; border-color: #34d399; }
+    #splash button.wrong { background: #4a1530; border-color: #f472b6; }
+    #splash .why { font-size: 14px; line-height: 1.45; color: #CBD5E1; margin-top: 12px; min-height: 0; }
+    #splash .why b { color: #F8FAFC; }
+    #splash .go { display: none; margin-top: 6px; width: min(400px, 92vw); background: linear-gradient(90deg, #8B5CF6, #EC4899); border: 0; font-size: 16px; padding: 15px; }
+    #splash.ready .go { display: block; }
+    #splash .fine { font-size: 11px; color: #64748B; text-align: center; max-width: 360px; }
   </style>
 </head>
 <body>
@@ -82,7 +110,18 @@
     <p>Worked examples: <a href="/example/convulsive-seizure">convulsion from sleep</a>, <a href="/example/pnes">prolonged event with eyes closed</a>, <a href="/example/convulsive-syncope">faint with jerks</a>, <a href="/example/cardiac-red-flag">collapse while running</a>.</p>
     <p>Seizure Compass needs JavaScript to run.</p>
   </noscript>
-  <div id="splash"><div class="word">Seizure <i>Compass</i></div><div class="mark"></div><div class="sub">The Tract · loading the engine…</div></div>
+  <div id="splash">
+    <div class="word">Seizure <i>Compass</i></div>
+    <div class="load"><div class="bar"><b id="sp-bar"></b></div><div class="sub"><span id="sp-stage">Downloading the engine…</span><span id="sp-pct"></span></div></div>
+    <div class="card" id="sp-card">
+      <div class="kick"><span>While you wait · seizure or mimic?</span><span id="sp-score"></span></div>
+      <div class="q" id="sp-q"></div>
+      <div class="opts"><button type="button" data-a="E">Epileptic</button><button type="button" data-a="M">Mimic</button></div>
+      <div class="why" id="sp-why"></div>
+    </div>
+    <button type="button" class="go" id="sp-go">Open the Compass →</button>
+    <div class="fine">Teaching items, not a diagnosis. The first visit downloads the app once; later visits open faster.</div>
+  </div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
@@ -92,13 +131,62 @@
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
   <script>
-    window.addEventListener('flutter-first-frame', function () {
-      var splash = document.getElementById('splash');
-      if (splash) {
-        splash.classList.add('hide');
-        setTimeout(function () { splash.remove(); }, 400);
-      }
+  (function () {
+    var Q = [
+      ['Eyes kept firmly shut throughout the event; they resist being opened.', 'M', 'Eye closure during the event strongly favours a functional (psychogenic) seizure. In epileptic seizures the eyes are usually open.'],
+      ['Bitten tongue, on the side, after a convulsion from sleep.', 'E', 'A lateral tongue bite is one of the most specific bedside signs of a generalised tonic–clonic seizure.'],
+      ['Stood up in a hot room, went pale, fell, a few jerks for under 15 seconds, then alert at once.', 'M', 'Convulsive syncope. Brief irregular jerks are common in fainting, and recovery is quick with little confusion.'],
+      ['Crying during the episode.', 'M', 'Ictal crying is a well-described sign of functional (psychogenic) seizures.'],
+      ['A rising feeling in the stomach, then lip-smacking and fumbling with the hands, with no memory of it.', 'E', 'An epigastric aura followed by oral and manual automatisms is a classic temporal-lobe seizure.'],
+      ['Several brief, stereotyped episodes a night from sleep, with thrashing and pelvic thrusting.', 'E', 'Trap: pelvic thrusting also occurs in frontal-lobe (hypermotor) seizures. Brief, stereotyped and clustered from sleep points to epilepsy.'],
+      ['Side-to-side head shaking that waxes and wanes for ten minutes.', 'M', 'Long, fluctuating events with side-to-side head movements favour functional seizures.'],
+      ['Collapsed while running; brief jerking; known family history of sudden death.', 'M', 'Mimic, and a red flag: exertional collapse needs an ECG and a cardiac work-up before anyone says epilepsy.'],
+      ['Both arms and legs shook for two minutes, yet the person recalls every moment.', 'M', 'Bilateral convulsive movements with preserved awareness and recall argue for a functional seizure (frontal seizures are the rare exception).'],
+      ['Head forced to one side, then generalised stiffening and jerking, then confused for 20 minutes.', 'E', 'Forced head version followed by a generalised convulsion and prolonged confusion is a focal-to-bilateral tonic–clonic seizure.'],
+      ['Grey and limp after a blood test, a few twitches, fully back within seconds.', 'M', 'Reflex (vasovagal) syncope, triggered by pain or the sight of blood.'],
+      ['Wakes from a nap, stares, and does not respond for a minute, then is drowsy for half an hour.', 'E', 'Unresponsiveness with prolonged post-event drowsiness favours a focal impaired-awareness seizure over a faint.']
+    ];
+    for (var i = Q.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = Q[i]; Q[i] = Q[j]; Q[j] = t; }
+    var $ = function (id) { return document.getElementById(id); };
+    var splash = $('splash'), n = 0, right = 0, done = 0, locked = false, played = false, ready = false;
+    function show() {
+      var q = Q[n % Q.length]; locked = false;
+      $('sp-q').textContent = q[0]; $('sp-why').innerHTML = '';
+      Array.prototype.forEach.call(splash.querySelectorAll('.opts button'), function (b) { b.className = ''; });
+    }
+    splash.querySelector('.opts').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b || locked) return;
+      locked = true; played = true; var q = Q[n % Q.length], ok = b.dataset.a === q[1];
+      done++; if (ok) right++;
+      b.className = ok ? 'right' : 'wrong';
+      if (!ok) splash.querySelector('.opts button[data-a="' + q[1] + '"]').className = 'right';
+      $('sp-why').innerHTML = '<b>' + (ok ? 'Right. ' : 'Not quite. ') + '</b>' + q[2];
+      $('sp-score').textContent = right + ' / ' + done;
+      n++; setTimeout(show, ok ? 3200 : 4600);
     });
+    show();
+    // progress: real milestones (resource timing) plus a slow creep in between
+    var pct = 4, floor = 4, cap = 55;
+    function set(p, label) { pct = Math.max(pct, p); $('sp-bar').style.width = pct + '%'; $('sp-pct').textContent = Math.round(pct) + '%'; if (label) $('sp-stage').textContent = label; }
+    var got = {};
+    function seen() {
+      (performance.getEntriesByType ? performance.getEntriesByType('resource') : []).forEach(function (r) {
+        if (/main\.dart\.js/.test(r.name) && r.responseEnd) got.js = 1;
+        if (/canvaskit\.wasm/.test(r.name) && r.responseEnd) got.wasm = 1;
+      });
+      var k = (got.js ? 1 : 0) + (got.wasm ? 1 : 0);
+      if (k === 1) { floor = 45; cap = 78; }
+      if (k === 2) { floor = 80; cap = 95; set(80, 'Starting the engine…'); }
+    }
+    var tick = setInterval(function () { if (ready) return; seen(); set(Math.min(cap, Math.max(floor, pct + (cap - pct) * 0.04))); }, 250);
+    function close() { splash.classList.add('hide'); setTimeout(function () { splash.remove(); }, 400); }
+    $('sp-go').addEventListener('click', close);
+    window.addEventListener('flutter-first-frame', function () {
+      ready = true; clearInterval(tick); set(100, 'Ready');
+      // if they are mid-question, let them finish and open when they choose
+      if (played) { splash.classList.add('ready'); setTimeout(close, 15000); } else close();
+    });
+  })();
   </script>
   <script>
     window.goatcounter = { path: function (p) { return 'compass' + (p === '/' ? '/' : p); } };
