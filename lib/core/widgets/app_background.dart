@@ -22,6 +22,9 @@ class _AppBackgroundState extends State<AppBackground> with SingleTickerProvider
     duration: const Duration(seconds: 66),
   );
 
+  // The backdrop sits behind every screen, so it repaints at a modest rate.
+  late final FrameGate _gate = FrameGate(_controller, fps: 24);
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -34,6 +37,7 @@ class _AppBackgroundState extends State<AppBackground> with SingleTickerProvider
 
   @override
   void dispose() {
+    _gate.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -44,7 +48,7 @@ class _AppBackgroundState extends State<AppBackground> with SingleTickerProvider
       fit: StackFit.expand,
       children: [
         RepaintBoundary(
-          child: CustomPaint(painter: _BackdropPainter(_controller)),
+          child: CustomPaint(painter: _BackdropPainter(_controller, _gate)),
         ),
         widget.child,
       ],
@@ -53,7 +57,7 @@ class _AppBackgroundState extends State<AppBackground> with SingleTickerProvider
 }
 
 class _BackdropPainter extends CustomPainter {
-  _BackdropPainter(this.clock) : super(repaint: clock);
+  _BackdropPainter(this.clock, Listenable gate) : super(repaint: gate);
 
   final Animation<double> clock;
 
@@ -108,7 +112,7 @@ class _BackdropPainter extends CustomPainter {
           ..shader = LinearGradient(
             colors: [
               AppColors.brand.withValues(alpha: 0),
-              (ch == 1 ? AppColors.pulse : AppColors.brand).withValues(alpha: 0.2),
+              (ch == 1 ? AppColors.pulse : AppColors.brand).withValues(alpha: 0.15),
               AppColors.brand.withValues(alpha: 0),
             ],
             stops: const [0.0, 0.55, 1.0],
