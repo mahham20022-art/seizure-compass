@@ -7,9 +7,12 @@ import '../theme/app_colors.dart';
 /// trace running through it, and a gradient needle swinging from white to
 /// neon magenta.
 class AppLogo extends StatelessWidget {
-  const AppLogo({super.key, this.size = 96});
+  const AppLogo({super.key, this.size = 96, this.needleTurn = 0});
 
   final double size;
+
+  /// Extra rotation of the needle, in radians (0 = its resting heading).
+  final double needleTurn;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +35,16 @@ class AppLogo extends StatelessWidget {
           ),
         ],
       ),
-      child: CustomPaint(painter: _CompassPainter(), size: Size.square(size)),
+      child: CustomPaint(painter: _CompassPainter(needleTurn), size: Size.square(size)),
     );
   }
 }
 
 class _CompassPainter extends CustomPainter {
+  _CompassPainter(this.needleTurn);
+
+  final double needleTurn;
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -149,7 +156,7 @@ class _CompassPainter extends CustomPainter {
 
   void _paintNeedle(Canvas canvas, Offset center, double r) {
     const tiltDeg = 40.0;
-    final theta = -tiltDeg * math.pi / 180;
+    final theta = -tiltDeg * math.pi / 180 + needleTurn;
     final axis = Offset(math.cos(theta), math.sin(theta));
     final perp = Offset(-axis.dy, axis.dx);
 
@@ -197,5 +204,5 @@ class _CompassPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _CompassPainter oldDelegate) => oldDelegate.needleTurn != needleTurn;
 }

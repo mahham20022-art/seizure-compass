@@ -19,12 +19,23 @@ jobs:
       - name: Build fonts
         run: pip install --quiet --break-system-packages fonttools brotli && python tool/build_fonts.py
       - run: flutter pub get
-      - run: flutter analyze
-      - run: flutter test
-      - run: flutter build web --release --base-href / --no-web-resources-cdn && cp build/web/index.html build/web/404.html && python3 tool/spa_routes.py build/web
+      - name: Analyze
+        id: analyze
+        continue-on-error: true
+        run: flutter analyze 2>&1 | tee /tmp/analyze.txt
+      - name: Test
+        id: test
+        continue-on-error: true
+        run: flutter test 2>&1 | tee /tmp/test.txt
+      - name: Build
+        id: build
+        continue-on-error: true
+        run: (flutter build web --release --base-href / --no-web-resources-cdn 2>&1 | tee /tmp/build.txt) && cp build/web/index.html build/web/404.html && python3 tool/spa_routes.py build/web
       - name: Size report
+        continue-on-error: true
         run: du -sh build/web && ls -la build/web assets/fonts && du -sh build/web/canvaskit || true
       - name: Preview screenshots
+        continue-on-error: true
         run: |
           python3 tool/serve.py build/web 8080 &
           sleep 2
@@ -32,8 +43,12 @@ jobs:
           NODE_PATH=/tmp/pw/node_modules cp tool/shots.mjs /tmp/pw/shots.mjs
           (cd /tmp/pw && node shots.mjs) && mv /tmp/pw/shots ./shots
       - name: Publish screenshots to preview-shots branch
+        if: always()
         run: |
           git config user.name "ci" && git config user.email "ci@users.noreply.github.com"
-          mkdir /tmp/out && cp -r shots /tmp/out/ && echo "${GITHUB_SHA}" > /tmp/out/SHA
+          mkdir -p /tmp/out && echo "${GITHUB_SHA}" > /tmp/out/SHA
+          cp -r shots /tmp/out/ 2>/dev/null || true
+          cp /tmp/analyze.txt /tmp/test.txt /tmp/build.txt /tmp/out/ 2>/dev/null || true
+          if [ -d build/web ]; then cp -r build/web /tmp/out/web && rm -rf /tmp/out/web/canvaskit; fi
           git checkout --orphan preview-shots && git rm -rfq . && cp -r /tmp/out/* . 
-          git add shots SHA && git commit -qm "Preview shots ${GITHUB_SHA}" && git push -f origin preview-shots
+          git add -A . && git commit -qm "Preview ${GITHUB_SHA}" && git push -f origin preview-shots

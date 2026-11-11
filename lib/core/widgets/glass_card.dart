@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../fx/motion.dart';
+import '../fx/reveal.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radii.dart';
 
@@ -33,6 +35,9 @@ class GlassCard extends StatefulWidget {
 class _GlassCardState extends State<GlassCard> {
   bool _hovering = false;
   bool _pressed = false;
+
+  // Cards built in the same burst enter one after another.
+  final Duration _enterDelay = Stagger.next();
 
   void _setHover(bool value) {
     if (widget.hoverable && _hovering != value) {
@@ -103,13 +108,16 @@ class _GlassCardState extends State<GlassCard> {
       child: result,
     );
 
-    if (!widget.hoverable) return result;
+    if (!widget.hoverable) return Reveal(delay: _enterDelay, child: result);
 
-    return MouseRegion(
-      onEnter: (_) => _setHover(true),
-      onExit: (_) => _setHover(false),
-      cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
-      child: result,
+    return Reveal(
+      delay: _enterDelay,
+      child: MouseRegion(
+        onEnter: (_) => _setHover(true),
+        onExit: (_) => _setHover(false),
+        cursor: widget.onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
+        child: result,
+      ),
     );
   }
 }

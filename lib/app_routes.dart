@@ -91,6 +91,37 @@ class AppRoutes {
         page = const HomeScreen();
         name = home;
     }
-    return MaterialPageRoute(builder: (_) => page, settings: RouteSettings(name: name, arguments: settings.arguments));
+    return _SettleRoute(page: page, settings: RouteSettings(name: name, arguments: settings.arguments));
   }
+}
+
+/// Screen change: the new screen fades in while rising and growing a touch
+/// into place; the old one dims slightly behind it. Instant when the
+/// platform asks for reduced motion.
+class _SettleRoute extends PageRouteBuilder<dynamic> {
+  _SettleRoute({required Widget page, required RouteSettings settings})
+      : super(
+          settings: settings,
+          transitionDuration: const Duration(milliseconds: 340),
+          reverseTransitionDuration: const Duration(milliseconds: 240),
+          pageBuilder: (context, animation, secondaryAnimation) => page,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (MediaQuery.maybeOf(context)?.disableAnimations ?? false) return child;
+            final enter = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
+            final leave = CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeOut);
+            return FadeTransition(
+              opacity: Tween<double>(begin: 1, end: 0.55).animate(leave),
+              child: FadeTransition(
+                opacity: enter,
+                child: SlideTransition(
+                  position: Tween<Offset>(begin: const Offset(0, 0.035), end: Offset.zero).animate(enter),
+                  child: ScaleTransition(
+                    scale: Tween<double>(begin: 0.975, end: 1).animate(enter),
+                    child: child,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
 }

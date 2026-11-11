@@ -1,9 +1,11 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../../core/fx/eeg.dart';
+import '../../../core/fx/motion.dart';
 import '../../../core/theme/app_colors.dart';
 
-/// A wide, faint EEG trace with a bright pulse continuously traveling
-/// along it — sits behind the hero logo so the mark reads as "live"
-/// without redrawing the logo's own painter.
+/// A live EEG trace running behind the hero logo: background rhythm, then a
+/// short spike-and-wave burst every few seconds. Fades out at both ends.
 class EegPulseBackdrop extends StatefulWidget {
   const EegPulseBackdrop({super.key, this.width = 260, this.height = 72});
 
@@ -15,10 +17,21 @@ class EegPulseBackdrop extends StatefulWidget {
 }
 
 class _EegPulseBackdropState extends State<EegPulseBackdrop> with SingleTickerProviderStateMixin {
+  // 14 s holds two whole bursts (period 7 s), so the loop is seamless.
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 3),
-  )..repeat();
+    duration: const Duration(seconds: 14),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (reduceMotion(context)) {
+      _controller.value = 0.47;
+    } else if (!_controller.isAnimating) {
+      _controller.repeat();
+    }
+  }
 
   @override
   void dispose() {
@@ -31,62 +44,62 @@ class _EegPulseBackdropState extends State<EegPulseBackdrop> with SingleTickerPr
     return SizedBox(
       width: widget.width,
       height: widget.height,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) => CustomPaint(painter: _EegPainter(_controller.value)),
-      ),
+      child: RepaintBoundary(child: CustomPaint(painter: _EegPainter(_controller))),
     );
   }
 }
 
 class _EegPainter extends CustomPainter {
-  _EegPainter(this.t);
+  _EegPainter(this.clock) : super(repaint: clock);
 
-  final double t;
-
-  Path _tracePath(Size size) {
-    final w = size.width;
-    final midY = size.height / 2;
-    return Path()
-      ..moveTo(0, midY)
-      ..lineTo(w * 0.10, midY)
-      ..lineTo(w * 0.18, midY - size.height * 0.32)
-      ..lineTo(w * 0.24, midY + size.height * 0.38)
-      ..lineTo(w * 0.30, midY)
-      ..lineTo(w * 0.46, midY)
-      ..lineTo(w * 0.52, midY - size.height * 0.4)
-      ..lineTo(w * 0.58, midY + size.height * 0.3)
-      ..lineTo(w * 0.66, midY)
-      ..lineTo(w * 0.82, midY)
-      ..lineTo(w * 0.88, midY - size.height * 0.3)
-      ..lineTo(w * 0.94, midY + size.height * 0.34)
-      ..lineTo(w, midY);
-  }
+  final Animation<double> clock;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = _tracePath(size);
+    final s = clock.value * 14.0;
+    const window = 3.2;
+    final midY = size.height / 2;
+    final amp = size.height * 0.3;
+    final path = Path();
+    final step = math.max(1.4, size.width / 300);
+    for (var x = 0.0; x <= size.width; x += step) {
+      final y = midY + eegSample(s + x / size.width * window, 0, period: 7.0) * amp;
+      if (x == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    Shader fade(double alpha) => LinearGradient(
+          colors: [
+            AppColors.pulse.withValues(alpha: 0),
+            AppColors.pulse.withValues(alpha: alpha),
+            AppColors.brand.withValues(alpha: alpha),
+            AppColors.brand.withValues(alpha: 0),
+          ],
+          stops: const [0.0, 0.3, 0.7, 1.0],
+        ).createShader(rect);
 
-    final basePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round
-      ..color = AppColors.line2.withValues(alpha: 0.4);
-    canvas.drawPath(path, basePaint);
-
-    final glowPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.6
-      ..strokeCap = StrokeCap.round
-      ..shader = LinearGradient(
-        colors: const [Colors.transparent, AppColors.pnes, Colors.transparent],
-        stops: const [0.0, 0.5, 1.0],
-        begin: Alignment(-1.0 + t * 3, 0),
-        end: Alignment(-0.4 + t * 3, 0),
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    canvas.drawPath(path, glowPaint);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 5
+        ..strokeJoin = StrokeJoin.round
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5)
+        ..shader = fade(0.4),
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6
+        ..strokeJoin = StrokeJoin.round
+        ..shader = fade(0.95),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _EegPainter oldDelegate) => oldDelegate.t != t;
+  bool shouldRepaint(covariant _EegPainter oldDelegate) => oldDelegate.clock != clock;
 }
