@@ -192,6 +192,24 @@
     window.goatcounter = { path: function (p) { return 'compass' + (p === '/' ? '/' : p); } };
   </script>
   <script data-goatcounter="https://naaajm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <script>
+    // The app is one page; count each screen the reader opens (path only, no cookies).
+    (function () {
+      var last = location.pathname;
+      function hit() {
+        if (location.pathname === last) return;
+        last = location.pathname;
+        var gc = window.goatcounter;
+        if (gc && gc.count) gc.count({ path: 'compass' + location.pathname });
+      }
+      ['pushState', 'replaceState'].forEach(function (k) {
+        var orig = history[k];
+        history[k] = function () { var r = orig.apply(this, arguments); setTimeout(hit, 0); return r; };
+      });
+      window.addEventListener('popstate', hit);
+    })();
+  </script>
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
