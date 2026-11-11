@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_radii.dart';
 import '../../core/widgets/app_background.dart';
@@ -398,13 +399,31 @@ class _AppDrawer extends StatelessWidget {
               ),
             ),
             const Divider(color: AppColors.line, height: 24),
-            _drawerTile(context, Icons.fact_check_rounded, 'Seizure Assessment', AppRoutes.assess),
-            _drawerTile(context, Icons.route_rounded, 'Localization', AppRoutes.localization),
-            _drawerTile(context, Icons.menu_book_rounded, 'Seizure Atlas', AppRoutes.atlas),
-            _drawerTile(context, Icons.lightbulb_outline_rounded, 'Clinical Pearls', AppRoutes.pearls),
-            _drawerTile(context, Icons.search_rounded, 'Search', AppRoutes.search),
-            _drawerTile(context, Icons.info_outline_rounded, 'About & evidence', AppRoutes.about),
-            const Spacer(),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _drawerTile(context, Icons.fact_check_rounded, 'Seizure Assessment', AppRoutes.assess),
+                  _drawerTile(context, Icons.route_rounded, 'Localization', AppRoutes.localization),
+                  _drawerTile(context, Icons.menu_book_rounded, 'Seizure Atlas', AppRoutes.atlas),
+                  _drawerTile(context, Icons.lightbulb_outline_rounded, 'Clinical Pearls', AppRoutes.pearls),
+                  _drawerTile(context, Icons.search_rounded, 'Search', AppRoutes.search),
+                  _drawerTile(context, Icons.info_outline_rounded, 'About & evidence', AppRoutes.about),
+                  const Divider(color: AppColors.line, height: 24),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(20, 2, 20, 4),
+                    child: Text(
+                      'MORE FROM THE TRACT · FREE',
+                      style: TextStyle(color: AppColors.faint, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4),
+                    ),
+                  ),
+                  _externalTile('NeuroMaze · neuroanatomy game', 'https://neuromaze.thetract.org/'),
+                  _externalTile('FEBN question bank', 'https://thetract.org/febn/mcq/'),
+                  _externalTile('Epilepsy question bank', 'https://thetract.org/seizures/qbank/'),
+                  _externalTile('THERMIND · fever after brain injury', 'https://thermind.thetract.org/'),
+                ],
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.all(20),
               child: _VersionFooter(),
@@ -412,6 +431,16 @@ class _AppDrawer extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// A link to another free tool from the same publisher; opens in the same tab.
+  Widget _externalTile(String label, String url) {
+    return ListTile(
+      dense: true,
+      leading: const Icon(Icons.north_east_rounded, color: AppColors.muted, size: 18),
+      title: Text(label, style: const TextStyle(color: AppColors.text2, fontSize: 13.5)),
+      onTap: () => launchUrl(Uri.parse(url), webOnlyWindowName: '_self'),
     );
   }
 
