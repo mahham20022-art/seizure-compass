@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../fx/breathing.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radii.dart';
 import 'glass_card.dart';
@@ -38,15 +39,21 @@ class NavCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(AppRadii.md),
-              border: Border.all(color: accent.withValues(alpha: 0.4)),
+          Breathing(
+            color: accent,
+            // offset each card by its title, so the four do not pulse together
+            phase: (title.length % 7) / 7,
+            radius: AppRadii.md,
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                border: Border.all(color: accent.withValues(alpha: 0.4)),
+              ),
+              child: Icon(icon, color: accent, size: 24),
             ),
-            child: Icon(icon, color: accent, size: 24),
           ),
           const SizedBox(height: AppSpacing.s3),
           Text(
