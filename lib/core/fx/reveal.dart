@@ -20,7 +20,7 @@ class Reveal extends StatefulWidget {
 class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 520),
+    duration: const Duration(milliseconds: 380),
   );
   late final Animation<double> _curve = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
   Timer? _timer;

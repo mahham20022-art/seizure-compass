@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../fx/eeg.dart';
@@ -22,6 +23,8 @@ class _AppBackgroundState extends State<AppBackground> with SingleTickerProvider
     duration: const Duration(seconds: 66),
   );
 
+  Timer? _start;
+
   // The backdrop sits behind every screen, so it repaints at a modest rate.
   late final FrameGate _gate = FrameGate(_controller, fps: 24);
 
@@ -29,14 +32,19 @@ class _AppBackgroundState extends State<AppBackground> with SingleTickerProvider
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (reduceMotion(context)) {
+      _start?.cancel();
       _controller.stop();
-    } else if (!_controller.isAnimating) {
-      _controller.repeat();
+    } else if (!_controller.isAnimating && _start == null) {
+      // Let the screen arrive first; the backdrop starts moving a moment later.
+      _start = Timer(const Duration(milliseconds: 1100), () {
+        if (mounted) _controller.repeat();
+      });
     }
   }
 
   @override
   void dispose() {
+    _start?.cancel();
     _gate.dispose();
     _controller.dispose();
     super.dispose();

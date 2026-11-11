@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../core/fx/eeg.dart';
@@ -27,14 +28,21 @@ class _EegPulseBackdropState extends State<EegPulseBackdrop> with SingleTickerPr
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (reduceMotion(context)) {
+      _start?.cancel();
       _controller.value = 0.47;
-    } else if (!_controller.isAnimating) {
-      _controller.repeat();
+    } else if (!_controller.isAnimating && _start == null) {
+      _controller.value = 0.47;
+      _start = Timer(const Duration(milliseconds: 700), () {
+        if (mounted) _controller.repeat();
+      });
     }
   }
 
+  Timer? _start;
+
   @override
   void dispose() {
+    _start?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -85,10 +93,17 @@ class _EegPainter extends CustomPainter {
       path,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 5
+        ..strokeWidth = 7
         ..strokeJoin = StrokeJoin.round
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5)
-        ..shader = fade(0.4),
+        ..shader = fade(0.1),
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3.6
+        ..strokeJoin = StrokeJoin.round
+        ..shader = fade(0.2),
     );
     canvas.drawPath(
       path,
