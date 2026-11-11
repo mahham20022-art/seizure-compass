@@ -58,6 +58,9 @@ class _BrainDiagramState extends State<BrainDiagram> with TickerProviderStateMix
     duration: const Duration(milliseconds: 2600),
   );
 
+  // The painting is rich, so it repaints at 30 frames a second, not 60.
+  late final FrameGate _gate = FrameGate(Listenable.merge([_pulseController, _spreadController]), fps: 30);
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -72,6 +75,7 @@ class _BrainDiagramState extends State<BrainDiagram> with TickerProviderStateMix
 
   @override
   void dispose() {
+    _gate.dispose();
     _pulseController.dispose();
     _spreadController.dispose();
     super.dispose();
@@ -116,6 +120,7 @@ class _BrainDiagramState extends State<BrainDiagram> with TickerProviderStateMix
                 confidences: widget.confidences,
                 pulse: _pulseController,
                 spread: _spreadController,
+                gate: _gate,
                 colorFor: _colorFor,
               ),
             ),
@@ -336,8 +341,9 @@ class _BrainPainter extends CustomPainter {
     required this.confidences,
     required this.pulse,
     required this.spread,
+    required Listenable gate,
     required this.colorFor,
-  }) : super(repaint: Listenable.merge([pulse, spread]));
+  }) : super(repaint: gate);
 
   final LocalizationRegion? selected;
   final LocalizationRegion? hovered;
