@@ -17,7 +17,7 @@ class Stagger {
     final now = DateTime.now();
     if (now.difference(_last).inMilliseconds > 120) _n = 0;
     _last = now;
-    final ms = (_n * 55).clamp(0, 440);
+    final ms = (_n * 40).clamp(0, 240);
     _n++;
     return Duration(milliseconds: ms);
   }

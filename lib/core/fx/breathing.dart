@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'motion.dart';
@@ -27,14 +28,20 @@ class _BreathingState extends State<Breathing> with SingleTickerProviderStateMix
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (reduceMotion(context)) {
+      _start?.cancel();
       _controller.stop();
-    } else if (!_controller.isAnimating) {
-      _controller.repeat();
+    } else if (!_controller.isAnimating && _start == null) {
+      _start = Timer(const Duration(milliseconds: 1600), () {
+        if (mounted) _controller.repeat();
+      });
     }
   }
 
+  Timer? _start;
+
   @override
   void dispose() {
+    _start?.cancel();
     _controller.dispose();
     super.dispose();
   }

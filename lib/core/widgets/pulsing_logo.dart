@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../fx/motion.dart';
@@ -30,16 +31,23 @@ class _PulsingLogoState extends State<PulsingLogo> with TickerProviderStateMixin
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (reduceMotion(context)) {
+      _start?.cancel();
       _breath.stop();
       _swing.stop();
-    } else if (!_breath.isAnimating) {
-      _breath.repeat(reverse: true);
-      _swing.repeat();
+    } else if (!_breath.isAnimating && _start == null) {
+      _start = Timer(const Duration(milliseconds: 900), () {
+        if (!mounted) return;
+        _breath.repeat(reverse: true);
+        _swing.repeat();
+      });
     }
   }
 
+  Timer? _start;
+
   @override
   void dispose() {
+    _start?.cancel();
     _breath.dispose();
     _swing.dispose();
     super.dispose();
