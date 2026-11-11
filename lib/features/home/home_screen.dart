@@ -175,7 +175,6 @@ class _HeroSection extends StatelessWidget {
               ],
             ),
           ),
-        )),
         ),
         const SizedBox(height: 8),
         const Reveal(
