@@ -1,10 +1,12 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../fx/motion.dart';
 import '../theme/app_colors.dart';
 import 'app_logo.dart';
 
-/// Wraps [AppLogo] in a slow, subtle "breathing" scale + glow so the
-/// compass/EEG mark feels alive without redrawing the mark itself. Used on
-/// both the splash screen and the home hero.
+/// The compass mark, alive: a slow breathing glow, and a needle that is
+/// nudged every few seconds, swings and settles back on its heading like a
+/// real compass. Used on the home hero.
 class PulsingLogo extends StatefulWidget {
   const PulsingLogo({super.key, required this.size});
 
@@ -14,24 +16,44 @@ class PulsingLogo extends StatefulWidget {
   State<PulsingLogo> createState() => _PulsingLogoState();
 }
 
-class _PulsingLogoState extends State<PulsingLogo> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+class _PulsingLogoState extends State<PulsingLogo> with TickerProviderStateMixin {
+  late final AnimationController _breath = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 3),
-  )..repeat(reverse: true);
+  );
+  late final AnimationController _swing = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 5200),
+  );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (reduceMotion(context)) {
+      _breath.stop();
+      _swing.stop();
+    } else if (!_breath.isAnimating) {
+      _breath.repeat(reverse: true);
+      _swing.repeat();
+    }
+  }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _breath.dispose();
+    _swing.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final t = Curves.easeInOut.transform(_controller.value);
+      animation: Listenable.merge([_breath, _swing]),
+      builder: (context, _) {
+        final t = Curves.easeInOut.transform(_breath.value);
+        // A damped oscillation that starts and ends at rest, so the loop has no jump.
+        final u = _swing.value;
+        final turn = 0.55 * math.sin(u * 2 * math.pi * 4.0) * math.exp(-5.5 * u) * math.sin(math.min(1.0, u * 12) * math.pi / 2);
         return Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -43,10 +65,12 @@ class _PulsingLogoState extends State<PulsingLogo> with SingleTickerProviderStat
               ),
             ],
           ),
-          child: Transform.scale(scale: 1.0 + t * 0.03, child: child),
+          child: Transform.scale(
+            scale: 1.0 + t * 0.03,
+            child: AppLogo(size: widget.size, needleTurn: turn),
+          ),
         );
       },
-      child: AppLogo(size: widget.size),
     );
   }
 }

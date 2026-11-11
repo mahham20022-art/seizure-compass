@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../fx/reveal.dart';
 
 /// Small kicker + title heading used to open a page section, e.g.
 /// "STEP 2 OF 5 — Aura Symptoms".
@@ -17,7 +18,9 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Reveal(
+      dy: 10,
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (kicker != null)
@@ -52,6 +55,7 @@ class SectionHeader extends StatelessWidget {
             ),
           ),
       ],
+      ),
     );
   }
 }

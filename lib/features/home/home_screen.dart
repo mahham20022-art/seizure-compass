@@ -13,6 +13,7 @@ import '../../data/repositories/example_cases.dart';
 import '../about/about_screen.dart';
 import '../search/search_screen.dart';
 import 'widgets/eeg_pulse_backdrop.dart';
+import '../../core/fx/reveal.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -149,15 +150,17 @@ class _HeroSection extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: const [
-              EegPulseBackdrop(width: 260, height: 72),
-              PulsingLogo(size: 116),
+              EegPulseBackdrop(width: 340, height: 84),
+              Reveal(dy: 0, child: PulsingLogo(size: 116)),
             ],
           ),
         ),
         const SizedBox(height: AppSpacing.s5),
-        const Center(child: EvidenceBadge()),
+        const Reveal(delay: Duration(milliseconds: 90), child: Center(child: EvidenceBadge())),
         const SizedBox(height: AppSpacing.s4),
-        const Center(
+        const Reveal(
+          delay: Duration(milliseconds: 170),
+          child: Center(
           child: Text.rich(
             TextSpan(
               children: [
@@ -172,25 +175,34 @@ class _HeroSection extends StatelessWidget {
               ],
             ),
           ),
+          ),
         ),
         const SizedBox(height: 8),
-        const Center(
-          child: Text(
-            'Clinical Decision Support for Seizure Assessment',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.text2, fontSize: 15, fontWeight: FontWeight.w600),
+        const Reveal(
+          delay: Duration(milliseconds: 250),
+          child: Center(
+            child: Text(
+              'Clinical Decision Support for Seizure Assessment',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.text2, fontSize: 15, fontWeight: FontWeight.w600),
+            ),
           ),
         ),
         const SizedBox(height: 6),
-        const Center(
-          child: Text(
-            'Navigate  •  Differentiate  •  Localize',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.muted, fontSize: 13, letterSpacing: 0.3),
+        const Reveal(
+          delay: Duration(milliseconds: 320),
+          child: Center(
+            child: Text(
+              'Navigate  •  Differentiate  •  Localize',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.muted, fontSize: 13, letterSpacing: 0.3),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.s6),
-        LayoutBuilder(
+        Reveal(
+          delay: const Duration(milliseconds: 400),
+          child: LayoutBuilder(
           builder: (context, constraints) {
             final wide = constraints.maxWidth > 460;
             final primary = PulseGlow(
@@ -223,6 +235,7 @@ class _HeroSection extends StatelessWidget {
               ],
             );
           },
+          ),
         ),
       ],
     );

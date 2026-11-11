@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../data/models/enums.dart';
+import '../fx/motion.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radii.dart';
 
-/// A stylized, interactive lateral-view brain diagram used by both the
-/// Localization Explorer and the Result dashboard. Each lobe is a
-/// tappable/hoverable region; [LocalizationRegion.insular] is drawn as a
-/// small deep marker and [LocalizationRegion.generalized] highlights the
-/// whole silhouette (selected via the legend below, not a screen position).
+/// An interactive lateral view of the left hemisphere, used by the
+/// Localization Explorer and the Result dashboard. The lobes follow the
+/// central and lateral sulci; each is tappable and hoverable.
+/// [LocalizationRegion.insular] is a marker deep to the lateral sulcus and
+/// [LocalizationRegion.generalized] lights the whole hemisphere (chosen from
+/// the legend). The selected region shows activity spreading from its focus.
 ///
-/// This is an illustrative schematic, not an anatomically precise atlas —
-/// intended to help a physician recognize "roughly where" at a glance.
+/// An illustration with simplified gyri, to show "roughly where" at a
+/// glance. It is not an atlas plate.
 class BrainDiagram extends StatefulWidget {
   const BrainDiagram({
     super.key,
@@ -42,28 +44,44 @@ class BrainDiagram extends StatefulWidget {
   State<BrainDiagram> createState() => _BrainDiagramState();
 }
 
-class _BrainDiagramState extends State<BrainDiagram> with SingleTickerProviderStateMixin {
+class _BrainDiagramState extends State<BrainDiagram> with TickerProviderStateMixin {
   LocalizationRegion? _hovered;
 
   late final AnimationController _pulseController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1600),
-  )..repeat(reverse: true);
+  );
+
+  /// Drives the rings that spread from the selected region's focus.
+  late final AnimationController _spreadController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2600),
+  );
+
+  // The painting is rich, so it repaints at 30 frames a second, not 60.
+  late final FrameGate _gate = FrameGate(Listenable.merge([_pulseController, _spreadController]), fps: 30);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (reduceMotion(context)) {
+      _pulseController.value = 0.6;
+      _spreadController.value = 0.5;
+    } else if (!_pulseController.isAnimating) {
+      _pulseController.repeat(reverse: true);
+      _spreadController.repeat();
+    }
+  }
 
   @override
   void dispose() {
+    _gate.dispose();
     _pulseController.dispose();
+    _spreadController.dispose();
     super.dispose();
   }
 
-  static const _lobeFractions = <LocalizationRegion, Rect>{
-    LocalizationRegion.frontal: Rect.fromLTRB(0.0, 0.0, 0.42, 0.66),
-    LocalizationRegion.parietal: Rect.fromLTRB(0.42, 0.0, 0.74, 0.40),
-    LocalizationRegion.occipital: Rect.fromLTRB(0.74, 0.10, 1.0, 0.72),
-    LocalizationRegion.temporal: Rect.fromLTRB(0.14, 0.58, 0.66, 1.0),
-  };
-
-  Color _colorFor(LocalizationRegion region) {
+  static Color _colorFor(LocalizationRegion region) {
     switch (region) {
       case LocalizationRegion.frontal:
         return AppColors.brand3;
@@ -81,59 +99,56 @@ class _BrainDiagramState extends State<BrainDiagram> with SingleTickerProviderSt
   }
 
   void _setHover(LocalizationRegion? region) {
-    if (!widget.interactive) return;
+    if (!widget.interactive || _hovered == region) return;
     setState(() => _hovered = region);
     widget.onHover?.call(region);
   }
 
   @override
   Widget build(BuildContext context) {
+    final Widget art = AspectRatio(
+      aspectRatio: _BrainArt.box.width / _BrainArt.box.height,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final size = Size(constraints.maxWidth, constraints.maxHeight);
+          final Widget paint = RepaintBoundary(
+            child: CustomPaint(
+              size: size,
+              painter: _BrainPainter(
+                selected: widget.selected,
+                hovered: _hovered,
+                confidences: widget.confidences,
+                pulse: _pulseController,
+                spread: _spreadController,
+                gate: _gate,
+                colorFor: _colorFor,
+              ),
+            ),
+          );
+          if (!widget.interactive) return paint;
+          return MouseRegion(
+            cursor: _hovered != null ? SystemMouseCursors.click : MouseCursor.defer,
+            onHover: (event) => _setHover(_BrainArt.regionAt(event.localPosition, size)),
+            onExit: (_) => _setHover(null),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapUp: (details) {
+                final region = _BrainArt.regionAt(details.localPosition, size);
+                if (region != null) widget.onSelect?.call(region);
+              },
+              child: paint,
+            ),
+          );
+        },
+      ),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AspectRatio(
-          aspectRatio: 1.45,
-          child: ClipPath(
-            clipper: _BrainOutlineClipper(),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.ink700, AppColors.ink900],
-                ),
-              ),
-              child: CustomPaint(
-                painter: _BrainSurfacePainter(),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final size = Size(constraints.maxWidth, constraints.maxHeight);
-                    return AnimatedBuilder(
-                      animation: _pulseController,
-                      builder: (context, _) {
-                        final pulse = Curves.easeInOut.transform(_pulseController.value);
-                        return Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            if (widget.selected == LocalizationRegion.generalized)
-                              Positioned.fill(
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: _colorFor(LocalizationRegion.generalized).withValues(alpha: 0.18 + pulse * 0.14),
-                                  ),
-                                ),
-                              ),
-                            for (final entry in _lobeFractions.entries) _lobeRegion(entry.key, entry.value, size, pulse),
-                            _insularMarker(size, pulse),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
+        Semantics(
+          label: 'Left hemisphere, lateral view${widget.selected == null ? '' : ': ${widget.selected!.label} highlighted'}',
+          child: art,
         ),
         const SizedBox(height: AppSpacing.s4),
         Wrap(
@@ -145,92 +160,6 @@ class _BrainDiagramState extends State<BrainDiagram> with SingleTickerProviderSt
           ],
         ),
       ],
-    );
-  }
-
-  Widget _lobeRegion(LocalizationRegion region, Rect fraction, Size size, double pulse) {
-    final rect = Rect.fromLTWH(
-      fraction.left * size.width,
-      fraction.top * size.height,
-      fraction.width * size.width,
-      fraction.height * size.height,
-    );
-    final active = widget.selected == region;
-    final hovered = _hovered == region;
-    final confidence = widget.confidences?[region];
-    final baseAlpha = active ? 0.42 : (hovered ? 0.26 : 0.08);
-    final pulseBoost = active ? pulse * 0.16 : 0.0;
-    final rawAlpha = confidence != null
-        ? baseAlpha * (0.5 + confidence * 0.5) + pulseBoost
-        : baseAlpha + pulseBoost;
-    final alpha = rawAlpha.clamp(0.06, 0.65);
-
-    // A plain DecoratedBox (not AnimatedContainer) — the enclosing
-    // AnimatedBuilder already redraws every pulse tick, so a second,
-    // independent transition here would just fight the first.
-    Widget region0 = DecoratedBox(
-      decoration: BoxDecoration(
-        color: _colorFor(region).withValues(alpha: alpha),
-        border: Border.all(
-          color: _colorFor(region).withValues(
-            alpha: active ? (0.55 + pulse * 0.35).clamp(0.0, 1.0) : (hovered ? 0.7 : 0.0),
-          ),
-          width: active ? 2.0 : 1.5,
-        ),
-      ),
-    );
-
-    if (widget.interactive) {
-      region0 = MouseRegion(
-        onEnter: (_) => _setHover(region),
-        onExit: (_) => _setHover(null),
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => widget.onSelect?.call(region),
-          child: region0,
-        ),
-      );
-    }
-
-    return Positioned.fromRect(rect: rect, child: region0);
-  }
-
-  Widget _insularMarker(Size size, double pulse) {
-    const cx = 0.50;
-    const cy = 0.55;
-    const r = 0.05;
-    final active = widget.selected == LocalizationRegion.insular;
-    final hovered = _hovered == LocalizationRegion.insular;
-    final baseD = size.shortestSide * r * 2;
-    final d = active ? baseD * (1.0 + pulse * 0.12) : baseD;
-
-    Widget marker = DecoratedBox(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: _colorFor(LocalizationRegion.insular).withValues(
-          alpha: active ? (0.7 + pulse * 0.25).clamp(0.0, 1.0) : (hovered ? 0.6 : 0.35),
-        ),
-        border: Border.all(color: AppColors.text.withValues(alpha: 0.6), width: 1.5),
-      ),
-    );
-    marker = SizedBox(width: d, height: d, child: marker);
-
-    if (widget.interactive) {
-      marker = MouseRegion(
-        onEnter: (_) => _setHover(LocalizationRegion.insular),
-        onExit: (_) => _setHover(null),
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => widget.onSelect?.call(LocalizationRegion.insular),
-          child: marker,
-        ),
-      );
-    }
-
-    return Positioned(
-      left: size.width * cx - d / 2,
-      top: size.height * cy - d / 2,
-      child: marker,
     );
   }
 
@@ -276,117 +205,335 @@ class _BrainDiagramState extends State<BrainDiagram> with SingleTickerProviderSt
   }
 }
 
-/// Hand-drawn stylized lateral brain silhouette: frontal bulge at front-top,
-/// parietal along the top-back, occipital tapering to a point at the back,
-/// and a temporal lobe hanging below a concave "sylvian fissure" notch.
-class _BrainOutlineClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Offset p(double fx, double fy) => Offset(fx * size.width, fy * size.height);
+/// Geometry of the illustration, in a 400 x 300 drawing space. The same
+/// outline and sulcal landmarks as The Tract's NeuroMaze atlas.
+class _BrainArt {
+  _BrainArt._();
 
-    final path = Path()..moveTo(p(0.10, 0.42).dx, p(0.10, 0.42).dy);
-    path.cubicTo(
-      p(0.06, 0.30).dx, p(0.06, 0.30).dy,
-      p(0.10, 0.20).dx, p(0.10, 0.20).dy,
-      p(0.14, 0.18).dx, p(0.14, 0.18).dy,
-    );
-    path.cubicTo(
-      p(0.20, 0.08).dx, p(0.20, 0.08).dy,
-      p(0.30, 0.04).dx, p(0.30, 0.04).dy,
-      p(0.42, 0.05).dx, p(0.42, 0.05).dy,
-    );
-    path.cubicTo(
-      p(0.52, 0.02).dx, p(0.52, 0.02).dy,
-      p(0.62, 0.03).dx, p(0.62, 0.03).dy,
-      p(0.70, 0.08).dx, p(0.70, 0.08).dy,
-    );
-    path.cubicTo(
-      p(0.80, 0.10).dx, p(0.80, 0.10).dy,
-      p(0.90, 0.14).dx, p(0.90, 0.14).dy,
-      p(0.92, 0.24).dx, p(0.92, 0.24).dy,
-    );
-    path.cubicTo(
-      p(0.98, 0.32).dx, p(0.98, 0.32).dy,
-      p(0.99, 0.40).dx, p(0.99, 0.40).dy,
-      p(0.97, 0.48).dx, p(0.97, 0.48).dy,
-    );
-    path.cubicTo(
-      p(0.97, 0.58).dx, p(0.97, 0.58).dy,
-      p(0.94, 0.64).dx, p(0.94, 0.64).dy,
-      p(0.88, 0.68).dx, p(0.88, 0.68).dy,
-    );
-    path.cubicTo(
-      p(0.80, 0.74).dx, p(0.80, 0.74).dy,
-      p(0.74, 0.76).dx, p(0.74, 0.76).dy,
-      p(0.68, 0.74).dx, p(0.68, 0.74).dy,
-    );
-    path.cubicTo(
-      p(0.63, 0.70).dx, p(0.63, 0.70).dy,
-      p(0.62, 0.66).dx, p(0.62, 0.66).dy,
-      p(0.58, 0.62).dx, p(0.58, 0.62).dy,
-    );
-    path.cubicTo(
-      p(0.56, 0.68).dx, p(0.56, 0.68).dy,
-      p(0.62, 0.74).dx, p(0.62, 0.74).dy,
-      p(0.62, 0.82).dx, p(0.62, 0.82).dy,
-    );
-    path.cubicTo(
-      p(0.62, 0.90).dx, p(0.62, 0.90).dy,
-      p(0.52, 0.93).dx, p(0.52, 0.93).dy,
-      p(0.40, 0.92).dx, p(0.40, 0.92).dy,
-    );
-    path.cubicTo(
-      p(0.30, 0.92).dx, p(0.30, 0.92).dy,
-      p(0.22, 0.90).dx, p(0.22, 0.90).dy,
-      p(0.18, 0.84).dx, p(0.18, 0.84).dy,
-    );
-    path.cubicTo(
-      p(0.12, 0.78).dx, p(0.12, 0.78).dy,
-      p(0.05, 0.72).dx, p(0.05, 0.72).dy,
-      p(0.06, 0.62).dx, p(0.06, 0.62).dy,
-    );
-    path.cubicTo(
-      p(0.04, 0.54).dx, p(0.04, 0.54).dy,
-      p(0.06, 0.46).dx, p(0.06, 0.46).dy,
-      p(0.10, 0.42).dx, p(0.10, 0.42).dy,
-    );
-    path.close();
+  /// The part of the drawing space that is shown.
+  static const box = Rect.fromLTWH(14, 12, 372, 288);
+
+  static final Path outline = _svg(
+    'M28 138 C30 90 70 48 130 34 C175 24 230 22 275 32 C320 44 356 76 368 118 C374 140 372 158 364 170 '
+    'C352 188 330 200 300 206 C262 214 228 226 196 230 C166 234 140 230 126 218 C114 208 110 192 118 182 '
+    'L128 174 C100 178 70 178 50 168 C36 160 28 150 28 138 Z',
+  );
+
+  static final Path cerebellum = _svg(
+    'M262 214 C280 198 330 192 356 204 C372 214 370 240 352 254 C330 268 288 268 266 254 C254 244 254 226 262 214 Z',
+  );
+
+  static final Path brainstem = _svg(
+    'M218 222 C226 214 246 214 254 222 C260 236 258 252 248 260 C246 270 246 284 246 296 L230 296 '
+    'C230 284 228 270 226 262 C214 254 210 234 218 222 Z',
+  );
+
+  static final Path centralSulcus = _svg('M214 26 C208 60 196 80 200 100 C204 118 186 135 184 158');
+  static final Path lateralSulcus = _svg('M128 174 C170 166 215 152 255 140 L268 124');
+
+  /// Each lobe as one or more shapes; they overrun the outline and are clipped to it.
+  static final Map<LocalizationRegion, List<Path>> lobes = {
+    LocalizationRegion.frontal: [
+      // frontal lobe, including the precentral gyrus (the central sulcus is its posterior border)
+      _svg('M0 -5 L216 -5 L214 26 C208 60 196 80 200 100 C204 118 186 135 184 158 L128 174 L0 182 Z'),
+    ],
+    LocalizationRegion.parietal: [
+      _svg('M216 -5 L334 -5 L330 58 L318 150 L262 134 L255 140 L184 158 C186 135 204 118 200 100 C196 80 208 60 214 26 Z'),
+    ],
+    LocalizationRegion.occipital: [
+      _svg('M334 -5 L410 -5 L410 310 L296 310 L300 206 L318 150 L330 58 Z'),
+    ],
+    LocalizationRegion.temporal: [
+      _svg('M128 174 L255 140 L262 134 L318 150 L300 206 L296 310 L90 310 L100 190 Z'),
+    ],
+  };
+
+  /// Where activity is drawn as starting, for each region.
+  static const Map<LocalizationRegion, Offset> focus = {
+    LocalizationRegion.frontal: Offset(104, 104),
+    LocalizationRegion.parietal: Offset(272, 84),
+    LocalizationRegion.occipital: Offset(346, 140),
+    LocalizationRegion.temporal: Offset(206, 198),
+    LocalizationRegion.insular: Offset(204, 153),
+    LocalizationRegion.generalized: Offset(200, 128),
+  };
+
+  static const insulaRadius = 10.0;
+
+  /// Gyri as centre lines with a width; drawn as rounded bands so the gaps read as sulci.
+  static final List<(Path, double)> gyri = [
+    for (final g in const <(String, double)>[
+      ('M30 136 C30 118 36 104 46 92', 20),
+      ('M84 50 C70 58 58 66 50 78', 18),
+      ('M262 66 C286 72 304 82 318 94', 20),
+      ('M300 104 C292 110 286 116 282 124', 14),
+      ('M362 118 C368 134 370 150 364 168', 16),
+      ('M110 232 C122 238 134 238 146 232', 12),
+      ('M240 92 C246 104 246 116 240 124', 12),
+      ('M36 158 C66 170 100 172 126 168', 18),
+      ('M44 140 C70 130 100 126 132 128 C146 134 152 146 154 160', 22),
+      ('M118 136 C126 146 130 156 132 166', 12),
+      ('M36 108 C70 90 120 82 170 86', 28),
+      ('M56 66 C96 50 146 40 190 36', 28),
+      ('M160 60 C166 74 170 84 172 98', 15),
+      ('M201 30 C195 60 184 80 188 100 C192 118 176 136 172 160', 23),
+      ('M228 30 C222 64 210 86 214 104 C218 122 200 136 198 152', 23),
+      ('M252 38 C280 42 312 56 330 72 C334 86 322 98 302 98 C284 98 268 92 256 84', 26),
+      ('M244 126 C254 112 272 110 282 122 C290 134 282 148 268 148', 22),
+      ('M296 122 C312 114 328 124 326 140 C324 154 310 160 298 152', 22),
+      ('M342 90 C358 110 366 132 362 152', 22),
+      ('M326 158 C344 166 356 170 364 164', 18),
+      ('M312 184 C330 186 346 182 358 174', 18),
+      ('M130 186 C180 172 230 158 274 150', 22),
+      ('M124 206 C180 196 240 184 302 176', 26),
+      ('M136 228 C190 224 250 212 304 198', 22),
+    ])
+      (_svg(g.$1), g.$2),
+  ];
+
+  /// Which region a point of the widget falls on, or null.
+  static LocalizationRegion? regionAt(Offset local, Size size) {
+    final k = size.width / box.width;
+    final p = Offset(local.dx / k + box.left, local.dy / k + box.top);
+    if ((p - focus[LocalizationRegion.insular]!).distance <= insulaRadius * 1.9) return LocalizationRegion.insular;
+    if (!outline.contains(p)) return null;
+    for (final entry in lobes.entries) {
+      for (final path in entry.value) {
+        if (path.contains(p)) return entry.key;
+      }
+    }
+    return null;
+  }
+
+  /// Builds a path from absolute SVG commands (M, L, C, Q, Z).
+  static Path _svg(String d) {
+    final tokens = RegExp(r'[MLCQZ]|-?\d*\.?\d+').allMatches(d).map((m) => m.group(0)!).toList();
+    final path = Path();
+    var i = 0;
+    var cmd = 'M';
+    double next() => double.parse(tokens[i++]);
+    while (i < tokens.length) {
+      if (RegExp(r'[MLCQZ]').hasMatch(tokens[i])) cmd = tokens[i++];
+      switch (cmd) {
+        case 'M':
+          path.moveTo(next(), next());
+          cmd = 'L';
+        case 'L':
+          path.lineTo(next(), next());
+        case 'Q':
+          path.quadraticBezierTo(next(), next(), next(), next());
+        case 'C':
+          path.cubicTo(next(), next(), next(), next(), next(), next());
+        case 'Z':
+          path.close();
+      }
+    }
     return path;
   }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
-/// Draws the outline stroke plus a couple of faint gyral folds on top of the
-/// clipped silhouette for texture.
-class _BrainSurfacePainter extends CustomPainter {
+/// Paints the hemisphere: cerebellum and brainstem behind, gyral relief,
+/// lobe colour, the two landmark sulci, and the activity of the selected region.
+class _BrainPainter extends CustomPainter {
+  _BrainPainter({
+    required this.selected,
+    required this.hovered,
+    required this.confidences,
+    required this.pulse,
+    required this.spread,
+    required Listenable gate,
+    required this.colorFor,
+  }) : super(repaint: gate);
+
+  final LocalizationRegion? selected;
+  final LocalizationRegion? hovered;
+  final Map<LocalizationRegion, double>? confidences;
+  final Animation<double> pulse;
+  final Animation<double> spread;
+  final Color Function(LocalizationRegion) colorFor;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final clipper = _BrainOutlineClipper();
-    final outline = clipper.getClip(size);
+    final k = size.width / _BrainArt.box.width;
+    final beat = Curves.easeInOut.transform(pulse.value);
+    canvas.save();
+    canvas.scale(k);
+    canvas.translate(-_BrainArt.box.left, -_BrainArt.box.top);
 
-    final strokePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..color = AppColors.line2;
-    canvas.drawPath(outline, strokePaint);
+    // Soft shadow under the specimen.
+    canvas.drawOval(
+      const Rect.fromLTWH(60, 262, 290, 26),
+      Paint()
+        ..color = const Color(0x8C000000)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+    );
 
-    final foldPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..strokeCap = StrokeCap.round
-      ..color = AppColors.line2.withValues(alpha: 0.6);
+    _paintBehind(canvas);
 
-    for (final t in [0.30, 0.48, 0.66]) {
-      canvas.drawLine(
-        Offset(size.width * 0.16, size.height * t),
-        Offset(size.width * 0.80, size.height * (t - 0.05)),
-        foldPaint,
+    // Everything on the hemisphere is clipped to its outline.
+    canvas.save();
+    canvas.clipPath(_BrainArt.outline);
+    final bounds = _BrainArt.outline.getBounds();
+    canvas.drawRect(bounds, Paint()..color = const Color(0xFF2B1D38));
+
+    for (final (path, w) in _BrainArt.gyri) {
+      canvas.save();
+      canvas.translate(0.8, 1.8);
+      canvas.drawPath(path, _stroke(const Color(0xB3120A1C), w + 3));
+      canvas.restore();
+      canvas.drawPath(path, _stroke(const Color(0xFFB4A2C6), w));
+      canvas.save();
+      canvas.translate(-1, -1.8);
+      canvas.drawPath(path, _stroke(const Color(0x30FFFFFF), w * 0.32));
+      canvas.restore();
+    }
+
+    // Light from the upper left, shade toward the lower right.
+    canvas.drawRect(
+      bounds,
+      Paint()
+        ..shader = const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0x26FFFFFF), Color(0x00000000), Color(0x59000000)],
+          stops: [0.0, 0.45, 1.0],
+        ).createShader(bounds),
+    );
+
+    // Lobe colour: hue over the relief, stronger for the hovered and selected lobe.
+    final general = selected == LocalizationRegion.generalized;
+    for (final entry in _BrainArt.lobes.entries) {
+      final region = entry.key;
+      final active = selected == region || general;
+      final hover = hovered == region;
+      final confidence = confidences?[region];
+      final color = general ? colorFor(LocalizationRegion.generalized) : colorFor(region);
+      var strength = active ? 0.86 : (hover ? 0.66 : 0.4);
+      if (confidence != null && active) strength *= 0.6 + 0.4 * confidence;
+      for (final path in entry.value) {
+        canvas.drawPath(
+          path,
+          Paint()
+            ..blendMode = BlendMode.color
+            ..color = color.withValues(alpha: strength),
+        );
+        if (!active) {
+          // lobes that are not selected sit back
+          canvas.drawPath(path, Paint()..color = Color.fromRGBO(17, 24, 39, selected == null ? 0.0 : (hover ? 0.12 : 0.38)));
+        } else {
+          canvas.drawPath(
+            path,
+            Paint()
+              ..blendMode = BlendMode.plus
+              ..color = color.withValues(alpha: 0.06 + beat * 0.1),
+          );
+        }
+      }
+    }
+
+    // Activity spreading from the focus of the selected region.
+    if (selected != null) {
+      final origin = _BrainArt.focus[selected]!;
+      final color = colorFor(selected!);
+      final reach = general ? 250.0 : (selected == LocalizationRegion.insular ? 70.0 : 112.0);
+      for (var i = 0; i < 3; i++) {
+        final u = (spread.value + i / 3) % 1.0;
+        final fade = (1 - u) * (1 - u);
+        canvas.drawCircle(
+          origin,
+          8 + u * reach,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.2 + 2.2 * (1 - u)
+            ..color = Color.lerp(color, Colors.white, 0.45)!.withValues(alpha: 0.7 * fade),
+        );
+      }
+      canvas.drawCircle(
+        origin,
+        26 + beat * 10,
+        Paint()
+          ..shader = RadialGradient(
+            colors: [Colors.white.withValues(alpha: 0.5), color.withValues(alpha: 0.28), color.withValues(alpha: 0)],
+            stops: const [0.0, 0.4, 1.0],
+          ).createShader(Rect.fromCircle(center: origin, radius: 26 + beat * 10)),
       );
     }
+
+    // Landmark sulci.
+    for (final sulcus in [_BrainArt.centralSulcus, _BrainArt.lateralSulcus]) {
+      canvas.drawPath(sulcus, _stroke(const Color(0xCC140B1E), 4.6));
+      canvas.drawPath(sulcus, _stroke(const Color(0xFFE7DBFF), 2.0));
+    }
+    canvas.restore();
+
+    // Rim: a dark edge, then a thin light on the upper left.
+    canvas.drawPath(_BrainArt.outline, _stroke(const Color(0xFF3B2A52), 2.4));
+    canvas.save();
+    canvas.translate(-0.9, -1.1);
+    canvas.drawPath(_BrainArt.outline, _stroke(const Color(0x47FFFFFF), 0.9));
+    canvas.restore();
+
+    _paintInsula(canvas, beat);
+    canvas.restore();
   }
 
+  void _paintBehind(Canvas canvas) {
+    Paint body(Rect r, Color light, Color dark) => Paint()
+      ..shader = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [light, dark]).createShader(r);
+
+    final stem = _BrainArt.brainstem.getBounds();
+    canvas.drawPath(_BrainArt.brainstem, body(stem, const Color(0xFFD9C3B4), const Color(0xFF8C7468)));
+    canvas.drawPath(_BrainArt.brainstem, _stroke(const Color(0x66120A1C), 1.2));
+
+    final cb = _BrainArt.cerebellum.getBounds();
+    canvas.drawPath(_BrainArt.cerebellum, body(cb, const Color(0xFFCFA6BC), const Color(0xFF7E5670)));
+    canvas.save();
+    canvas.clipPath(_BrainArt.cerebellum);
+    // folia: a stack of shallow arcs
+    for (var y = cb.top + 8; y < cb.bottom; y += 7.5) {
+      final arc = Path()
+        ..moveTo(cb.left - 4, y + 5)
+        ..quadraticBezierTo(cb.center.dx, y - 7, cb.right + 4, y + 5);
+      canvas.drawPath(arc, _stroke(const Color(0x73301A30), 1.4));
+    }
+    canvas.restore();
+    canvas.drawPath(_BrainArt.cerebellum, _stroke(const Color(0x66120A1C), 1.2));
+  }
+
+  void _paintInsula(Canvas canvas, double beat) {
+    final center = _BrainArt.focus[LocalizationRegion.insular]!;
+    final active = selected == LocalizationRegion.insular;
+    final hover = hovered == LocalizationRegion.insular;
+    final color = colorFor(LocalizationRegion.insular);
+    final r = _BrainArt.insulaRadius * (active ? 1.0 + beat * 0.14 : 1.0);
+    if (active || hover) {
+      canvas.drawCircle(
+        center,
+        r + 7,
+        Paint()
+          ..color = color.withValues(alpha: 0.4)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7),
+      );
+    }
+    canvas.drawCircle(center, r, Paint()..color = color.withValues(alpha: active ? 0.95 : (hover ? 0.8 : 0.5)));
+    canvas.drawCircle(
+      center,
+      r,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5
+        ..color = AppColors.text.withValues(alpha: active ? 0.95 : 0.6),
+    );
+  }
+
+  static Paint _stroke(Color color, double width) => Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round
+    ..color = color;
+
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _BrainPainter oldDelegate) =>
+      oldDelegate.selected != selected || oldDelegate.hovered != hovered || oldDelegate.confidences != confidences;
 }
