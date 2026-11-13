@@ -10,7 +10,7 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 import '../../domain/scoring/evidence_weights.dart';
 
-const appVersion = '2.0.0';
+const appVersion = '2.0.1';
 const appLastReviewed = '5 November 2026';
 const appContactEmail = 'contact@thetract.org';
 const appErrorReportSubject = 'Seizure Compass error report v$appVersion';
@@ -199,6 +199,15 @@ class AboutScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _ChangelogEntry(
+                          version: '2.0.1',
+                          date: '13 November 2026',
+                          changes: [
+                            'Calgary score: head turning now scores +2, as in Sheldon 2002 (was +1).',
+                            'Content review: prolactin, visual aura, figure-of-4 and photosensitivity pearls corrected; '
+                                'ILAE 2017/2022 names for spasms, early infantile DEE and sleep-related hypermotor epilepsy.',
+                          ],
+                        ),
                         _ChangelogEntry(
                           version: '2.0.0',
                           date: '5 November 2026',

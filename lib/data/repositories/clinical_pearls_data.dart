@@ -36,7 +36,7 @@ const List<ClinicalPearl> clinicalPearls = [
   ClinicalPearl(
     category: 'Epilepsy vs PNES',
     title: 'Post-ictal prolactin',
-    text: 'A normal level after a witnessed convulsive event favors PNES; a rise at 10-20 minutes favors epilepsy.',
+    text: 'A rise in serum prolactin drawn 10-20 minutes after the event supports a generalized tonic-clonic or focal impaired awareness seizure over PNES; a normal level does not exclude an epileptic seizure (AAN 2005).',
     level: EvidenceLevel.supportive,
   ),
   ClinicalPearl(
@@ -62,7 +62,7 @@ const List<ClinicalPearl> clinicalPearls = [
   ClinicalPearl(
     category: 'Localization',
     title: 'Figure-of-4 & fencing posture',
-    text: 'Both lateralize to a supplementary motor area (frontal) seizure, contralateral to the extended arm.',
+    text: 'The extended arm points to the hemisphere opposite it: onset is contralateral. The fencing (M2e) posture also suggests supplementary motor area onset; figure-of-4 is seen in temporal as well as frontal seizures.',
     level: EvidenceLevel.classic,
   ),
   ClinicalPearl(
@@ -74,7 +74,7 @@ const List<ClinicalPearl> clinicalPearls = [
   ClinicalPearl(
     category: 'Localization',
     title: 'Elementary visual hallucinations',
-    text: 'Flashing lights suggest occipital onset; slower, spreading, colored scintillations suggest migraine instead.',
+    text: 'Brief, colored, circular flashes that start in one hemifield suggest occipital onset; a slowly spreading, mostly black-and-white zigzag (fortification) lasting minutes suggests migraine.',
     level: EvidenceLevel.supportive,
   ),
   ClinicalPearl(

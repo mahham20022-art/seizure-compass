@@ -22,15 +22,15 @@ const List<SeizureLibraryEntry> seizureLibrary = [
       'Behavioral arrest with impaired responsiveness',
       'Oroalimentary and/or manual automatisms',
       'Postictal confusion',
-      'May secondarily generalize to a bilateral tonic-clonic seizure',
+      'May evolve to a focal to bilateral tonic-clonic seizure',
     ],
     eeg: 'Focal (most often temporal) rhythmic ictal discharge; interictal temporal spikes.',
-    pearl: 'Automatisms occurring with preserved but impaired responsiveness is the defining feature.',
+    pearl: 'Impaired awareness at any point is what defines it; automatisms are common but not required.',
   ),
   SeizureLibraryEntry(
     name: 'Generalized tonic-clonic seizure',
     category: 'Generalized',
-    summary: 'Bilateral tonic stiffening followed by clonic jerking with loss of consciousness from onset, or secondarily generalized from a focal seizure.',
+    summary: 'Bilateral tonic stiffening followed by clonic jerking with loss of consciousness from onset. A convulsion that starts focally is classed as focal to bilateral tonic-clonic (ILAE 2017).',
     keyFeatures: [
       'Tonic stiffening then clonic jerking',
       'Cyanosis and lateral tongue biting are common',
@@ -154,7 +154,7 @@ const List<SeizureLibraryEntry> seizureLibrary = [
       'More common in children and adolescents with genetic generalized epilepsy',
     ],
     eeg: 'Photoparoxysmal response to intermittent photic stimulation.',
-    pearl: 'Polarizing sunglasses or covering one eye can help abort an ongoing photic-triggered seizure.',
+    pearl: 'Covering one eye when exposed to flicker sharply reduces the photoparoxysmal response; blue-tinted (Z1) lenses also help.',
   ),
   SeizureLibraryEntry(
     name: 'Reading epilepsy',
@@ -200,14 +200,14 @@ const List<SeizureLibraryEntry> seizureLibrary = [
     eeg: 'Rapid generalized or bilateral discharge time-locked to the startle stimulus.',
   ),
   SeizureLibraryEntry(
-    name: 'Infantile spasms (West syndrome)',
+    name: 'Infantile epileptic spasms syndrome (West syndrome)',
     category: 'Epilepsy syndrome',
     summary: 'Clusters of brief flexor, extensor, or mixed spasms in infancy, part of West syndrome (spasms, hypsarrhythmia, developmental regression).',
     keyFeatures: [
       'Onset typically 3-12 months of age',
       'Clustered brief spasms (flexion, extension, or mixed)',
       'Developmental regression is a red flag',
-      'Requires urgent evaluation — ACTH/vigabatrin are first-line',
+      'Requires urgent evaluation; first-line is hormonal therapy (ACTH or high-dose prednisolone) or vigabatrin (first choice in tuberous sclerosis)',
     ],
     eeg: 'Hypsarrhythmia: chaotic, high-amplitude slow activity with multifocal spikes.',
     pearl: 'Infantile spasms are a pediatric neurologic emergency — early treatment improves developmental outcome.',
@@ -215,7 +215,7 @@ const List<SeizureLibraryEntry> seizureLibrary = [
   SeizureLibraryEntry(
     name: 'Juvenile myoclonic epilepsy',
     category: 'Epilepsy syndrome',
-    summary: 'The most common genetic generalized epilepsy syndrome, presenting in adolescence with morning myoclonic jerks.',
+    summary: 'One of the commonest genetic generalized epilepsy syndromes, presenting in adolescence with morning myoclonic jerks.',
     keyFeatures: [
       'Early-morning myoclonic jerks, often shortly after awakening',
       'Generalized tonic-clonic seizures are common',
@@ -289,7 +289,7 @@ const List<SeizureLibraryEntry> seizureLibrary = [
     keyFeatures: [
       'Onset typically age 3-7 years',
       'Regression of previously normal language, especially auditory verbal agnosia',
-      'Overt seizures occur in only about two-thirds of cases',
+      'Overt seizures occur in about 70-80% of cases, so their absence does not exclude it',
       'Behavioral change is common',
     ],
     eeg: 'Near-continuous spike-wave activity during slow-wave sleep, often bitemporal.',
@@ -297,7 +297,7 @@ const List<SeizureLibraryEntry> seizureLibrary = [
     isRare: true,
   ),
   SeizureLibraryEntry(
-    name: 'Ohtahara syndrome',
+    name: 'Ohtahara syndrome (now early infantile DEE)',
     category: 'Rare / genetic syndrome',
     summary: 'Early infantile epileptic encephalopathy presenting in the first weeks of life with tonic spasms and a burst-suppression EEG pattern; among the earliest-onset and most severe epilepsy syndromes.',
     keyFeatures: [
@@ -339,9 +339,9 @@ const List<SeizureLibraryEntry> seizureLibrary = [
     isRare: true,
   ),
   SeizureLibraryEntry(
-    name: 'Autosomal dominant nocturnal frontal lobe epilepsy (ADNFLE)',
+    name: 'Sleep-related hypermotor epilepsy (SHE; formerly ADNFLE)',
     category: 'Rare / genetic syndrome',
-    summary: 'A genetic (often CHRNA4/CHRNB2 nicotinic receptor gene) focal epilepsy causing brief, clustered hypermotor seizures during sleep, frequently misdiagnosed as a parasomnia.',
+    summary: 'Renamed sleep-related hypermotor epilepsy in 2016. The familial form is linked to nicotinic receptor genes (CHRNA4, CHRNB2), though most cases are sporadic. It causes brief, clustered hypermotor seizures during sleep, frequently misdiagnosed as a parasomnia.',
     keyFeatures: [
       'Clusters of brief (seconds to a minute), stereotyped hypermotor/hyperkinetic seizures during sleep',
       'Onset usually in childhood, often with a family history',

@@ -178,7 +178,7 @@ class SeizureScoringEngine {
     add(i.tongueBite != TongueBiteLocation.none, 'Tongue cut after the spell', 2);
     add(i.has('deja_vu') || i.has('jamais_vu'), 'Déjà vu or jamais vu before', 1);
     add(i.has('emotional_trigger'), 'Emotional stress with the loss of consciousness', 1);
-    add(i.has('head_deviation'), 'Head turning during the spell', 1);
+    add(i.has('head_deviation'), 'Head turning during the spell', 2);
     add(
       const ['behavioral_arrest', 'tonic_phase', 'clonic_phase', 'myoclonic_jerks', 'memory_loss', 'fencing_posture',
         'figure_of_four', 'automatisms', 'hypermotor_activity'].any(i.has),

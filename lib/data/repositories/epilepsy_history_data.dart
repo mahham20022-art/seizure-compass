@@ -27,7 +27,7 @@ const List<HistoryEvent> epilepsyHistory = [
   HistoryEvent(
     era: '1912',
     title: 'Phenobarbital',
-    description: 'Phenobarbital enters use and becomes the first widely effective anti-seizure medication, opening the modern pharmacological treatment era for epilepsy.',
+    description: 'Phenobarbital enters use, following bromide (1857) and becoming the first widely used anti-seizure medication of the modern era.',
   ),
   HistoryEvent(
     era: '1924–1929',
