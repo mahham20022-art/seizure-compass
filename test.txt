@@ -1,0 +1,14 @@
+
+::group::✅ Passing tests
+✅ probabilities sum to 1 and equal the prior with no findings
+✅ convulsive seizure example favours epileptic, left hemisphere
+✅ PNES example favours PNES despite an epilepsy label
+✅ convulsive syncope example favours syncope; Calgary negative
+✅ cardiac red flags surface regardless of the differential
+✅ urinary incontinence alone does not move the estimate
+✅ ictal weeping favours PNES
+✅ correlated automatisms are damped
+✅ a raised prolactin also nudges syncope (AAN 2005)
+::endgroup::
+
+🎉 9 tests passed.
