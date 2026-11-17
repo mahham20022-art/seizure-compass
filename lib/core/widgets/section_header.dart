@@ -29,7 +29,7 @@ class SectionHeader extends StatelessWidget {
             child: Text(
               kicker!.toUpperCase(),
               style: const TextStyle(
-                color: AppColors.brand,
+                color: AppColors.brandText,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 2,

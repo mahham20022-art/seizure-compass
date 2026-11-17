@@ -38,7 +38,7 @@ class ConfidenceRing extends StatelessWidget {
                 children: [
                   Text(
                     '${(animated * 100).round()}%',
-                    style: TextStyle(color: color, fontSize: size * 0.22, fontWeight: FontWeight.w800),
+                    style: TextStyle(color: color == AppColors.epileptic ? AppColors.brandText : color, fontSize: size * 0.22, fontWeight: FontWeight.w800),
                   ),
                   if (label != null)
                     Text(
