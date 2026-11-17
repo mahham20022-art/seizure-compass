@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import '../../../app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_radii.dart';
-import '../../../core/widgets/app_background.dart';
 import '../../../core/widgets/brain_diagram.dart';
 import '../../../core/widgets/confidence_ring.dart';
 import '../../../core/widgets/disclaimer_banner.dart';
@@ -25,6 +24,9 @@ Color categoryColor(EventCategory c) => switch (c) {
       EventCategory.otherMimic => AppColors.otherMimic,
     };
 
+/// Category colour for text: the purple fill is too dark to read as text.
+Color categoryTextColor(EventCategory c) => c == EventCategory.epileptic ? AppColors.brandText : categoryColor(c);
+
 String _pct(double v) => v < 0.01 ? '<1%' : '${(v * 100).round()}%';
 
 class ResultScreen extends StatelessWidget {
@@ -41,7 +43,9 @@ class ResultScreen extends StatelessWidget {
     final top = result.topCategory;
     final topColor = categoryColor(top);
 
-    return AppBackground(
+    // A still background here: nothing should move behind the result.
+    return ColoredBox(
+      color: AppColors.ink950,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -99,7 +103,7 @@ class ResultScreen extends StatelessWidget {
                               const SizedBox(height: 6),
                               Text(top == EventCategory.syncope && result.hasCardiacFlag ? 'Syncope — cardiac?' : top.label,
                                   style: TextStyle(
-                                      color: topColor, fontSize: 26, fontWeight: FontWeight.w600, fontFamily: 'Newsreader')),
+                                      color: categoryTextColor(top), fontSize: 26, fontWeight: FontWeight.w600, fontFamily: 'Newsreader')),
                               const SizedBox(height: 6),
                               Text(
                                 result.hasCardiacFlag
@@ -139,12 +143,13 @@ class ResultScreen extends StatelessWidget {
                               label: entry.key.label,
                               value: entry.value,
                               color: categoryColor(entry.key),
+                              textColor: categoryTextColor(entry.key),
                               highlight: entry.key == top,
                             ),
                           ),
                         Text(
                           'Prior ${ordered.map((e) => '${e.key.label} ${_pct(result.priors[e.key]!)}').join(' · ')}',
-                          style: const TextStyle(color: AppColors.faint, fontSize: 11.5, height: 1.4),
+                          style: const TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.4),
                         ),
                       ],
                     ),
@@ -201,7 +206,7 @@ class ResultScreen extends StatelessWidget {
                         for (var k = 0; k < result.suggestedInvestigations.length; k++)
                           _Bullet(result.suggestedInvestigations[k],
                               icon: k == 0 ? Icons.arrow_forward_rounded : Icons.science_outlined,
-                              color: k == 0 ? AppColors.brand : AppColors.muted,
+                              color: k == 0 ? AppColors.brandText : AppColors.muted,
                               strong: k == 0),
                       ],
                     ),
@@ -317,51 +322,102 @@ class _RedFlagCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Cardiac flags share one action; the abnormal-ECG flag has its own.
+    // Cardiac flags share one set of next steps, shown once under the group.
     final cardiac = flags.where((f) => f.cardiac && f.title != 'Abnormal ECG').toList();
     final others = flags.where((f) => !cardiac.contains(f)).toList();
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.s4),
-      decoration: BoxDecoration(
-        color: AppColors.danger.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(color: AppColors.danger, width: 1.5),
+    return Semantics(
+      container: true,
+      label: 'Red flags, act on these first',
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.s4),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2A1418), // opaque: no backdrop shows through
+          borderRadius: BorderRadius.circular(AppRadii.lg),
+          border: Border.all(color: AppColors.danger, width: 1.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.warning_rounded, color: _RedFlagCard.red, size: 22),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text('Red flags: act on these first',
+                      style: TextStyle(color: _RedFlagCard.red, fontSize: 16, fontWeight: FontWeight.w800)),
+                ),
+              ],
+            ),
+            if (cardiac.isNotEmpty)
+              _FlagItem(
+                title: cardiac.length == 1 ? cardiac.first.title : 'Cardiac high-risk features',
+                whys: [for (final f in cardiac) cardiac.length == 1 ? f.why : '${f.title}: ${f.why}'],
+                steps: cardiac.first.steps,
+              ),
+            for (final f in others) _FlagItem(title: f.title, whys: [f.why], steps: f.steps),
+          ],
+        ),
       ),
+    );
+  }
+
+  /// Lighter red for text on the dark card (contrast ≈ 6.9:1).
+  static const red = Color(0xFFFF8A8A);
+}
+
+class _FlagItem extends StatelessWidget {
+  const _FlagItem({required this.title, required this.whys, required this.steps});
+  final String title;
+  final List<String> whys;
+  final List<String> steps;
+
+  static const _label = TextStyle(
+      color: _RedFlagCard.red, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.1);
+  static const _body = TextStyle(color: AppColors.text, fontSize: 14, height: 1.45);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.only(top: 12),
+      decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0xFF5A2A30)))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.warning_rounded, color: AppColors.danger, size: 20),
-              SizedBox(width: 8),
+              const Padding(
+                padding: EdgeInsets.only(top: 3),
+                child: Icon(Icons.flag_rounded, color: _RedFlagCard.red, size: 16),
+              ),
+              const SizedBox(width: 8),
               Expanded(
-                child: Text('Red flags — act on these first',
-                    style: TextStyle(color: AppColors.danger, fontSize: 15, fontWeight: FontWeight.w800)),
+                child: Text(title,
+                    style: const TextStyle(color: AppColors.text, fontSize: 15, fontWeight: FontWeight.w800, height: 1.3)),
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          if (cardiac.isNotEmpty)
+          const SizedBox(height: 8),
+          const Text('WHY IT MATTERS', style: _label),
+          const SizedBox(height: 3),
+          for (final w in whys) Padding(padding: const EdgeInsets.only(bottom: 3), child: Text(w, style: _body)),
+          const SizedBox(height: 6),
+          const Text('NEXT', style: _label),
+          const SizedBox(height: 3),
+          for (final step in steps)
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: '${cardiac.map((f) => f.title).join(' · ')}. ',
-                      style: const TextStyle(color: AppColors.text, fontWeight: FontWeight.w700)),
-                  TextSpan(text: cardiac.first.action),
-                ]),
-                style: const TextStyle(color: AppColors.text2, fontSize: 13, height: 1.45),
-              ),
-            ),
-          for (final f in others)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Text.rich(
-                TextSpan(children: [
-                  TextSpan(text: '${f.title}. ', style: const TextStyle(color: AppColors.text, fontWeight: FontWeight.w700)),
-                  TextSpan(text: f.action),
-                ]),
-                style: const TextStyle(color: AppColors.text2, fontSize: 13, height: 1.45),
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 2),
+                    child: Icon(Icons.arrow_right_rounded, color: AppColors.text, size: 18),
+                  ),
+                  const SizedBox(width: 2),
+                  Expanded(child: Text(step, style: _body)),
+                ],
               ),
             ),
         ],
@@ -476,7 +532,7 @@ class _EvidenceRowState extends State<_EvidenceRow> {
               Text(c.rationale, style: const TextStyle(color: AppColors.text2, fontSize: 12.5, height: 1.45)),
               if (c.source != null && references[c.source] != null) ...[
                 const SizedBox(height: 4),
-                Text(references[c.source]!, style: const TextStyle(color: AppColors.faint, fontSize: 11.5, height: 1.4)),
+                Text(references[c.source]!, style: const TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.4)),
               ],
             ],
           ],
@@ -495,7 +551,7 @@ class _GradeChip extends StatelessWidget {
     final color = switch (grade) {
       EvidenceGrade.a => AppColors.ok,
       EvidenceGrade.b => AppColors.syncope,
-      EvidenceGrade.c => AppColors.faint,
+      EvidenceGrade.c => AppColors.muted,
     };
     return Container(
       width: 22,
@@ -517,7 +573,7 @@ class _CalgaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = !score.answered ? AppColors.faint : (score.favoursSeizure ? AppColors.epileptic : AppColors.syncope);
+    final color = !score.answered ? AppColors.muted : (score.favoursSeizure ? AppColors.brandText : AppColors.syncope);
     return GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,7 +637,7 @@ class _CalgaryCard extends StatelessWidget {
           const Text(
             'Sheldon et al., JACC 2002: 94% sensitivity and 94% specificity for seizure vs syncope in the derivation '
             'cohort. It answers seizure vs syncope only — it was not built to detect PNES.',
-            style: TextStyle(color: AppColors.faint, fontSize: 11.5, height: 1.4),
+            style: TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.4),
           ),
         ],
       ),
@@ -630,7 +686,7 @@ class _LateralCard extends StatelessWidget {
           const Text(
             'Dominance assumed left (true in ~95% of right-handers, ~70% of left-handers). '
             'Approximate PPVs from Loddenkemper & Kotagal, Epilepsy Behav 2005.',
-            style: TextStyle(color: AppColors.faint, fontSize: 11.5, height: 1.4),
+            style: TextStyle(color: AppColors.muted, fontSize: 11.5, height: 1.4),
           ),
         ],
       ),
@@ -657,7 +713,7 @@ class _Hemi extends StatelessWidget {
         ),
         border: Border.all(color: active ? AppColors.brand : AppColors.line),
       ),
-      child: Text(label, style: TextStyle(color: active ? AppColors.brand : AppColors.faint, fontWeight: FontWeight.w800)),
+      child: Text(label, style: TextStyle(color: active ? AppColors.brandText : AppColors.muted, fontWeight: FontWeight.w800)),
     );
   }
 }

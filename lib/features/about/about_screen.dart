@@ -10,7 +10,7 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 import '../../domain/scoring/evidence_weights.dart';
 
-const appVersion = '2.0.1';
+const appVersion = '2.0.2';
 const appLastReviewed = '5 November 2026';
 const appContactEmail = 'contact@thetract.org';
 const appErrorReportSubject = 'Seizure Compass error report v$appVersion';
@@ -199,6 +199,14 @@ class AboutScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _ChangelogEntry(
+                          version: '2.0.2',
+                          date: '17 November 2026',
+                          changes: [
+                            'Result screen (LITFL editor review): red flags now read as separate items, each with why it matters and what to do next.',
+                            'Higher contrast on the result screen, and a still background behind it: no moving EEG lines behind the result.',
+                          ],
+                        ),
                         _ChangelogEntry(
                           version: '2.0.1',
                           date: '13 November 2026',

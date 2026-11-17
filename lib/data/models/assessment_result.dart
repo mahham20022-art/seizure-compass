@@ -49,11 +49,17 @@ class CalgaryScore {
   bool get favoursSeizure => score >= 1;
 }
 
+/// A red flag shown before the differential: what was found, why it
+/// matters, and what to do next.
 class RedFlag {
-  const RedFlag(this.title, this.action, {this.cardiac = true});
+  const RedFlag(this.title, this.why, this.steps, {this.cardiac = true});
   final String title;
-  final String action;
+  final String why;
+  final List<String> steps;
   final bool cardiac;
+
+  /// One line for the copied summary.
+  String get action => steps.join('; ');
 }
 
 class LateralizationResult {

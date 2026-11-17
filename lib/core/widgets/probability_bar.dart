@@ -10,6 +10,7 @@ class ProbabilityBar extends StatelessWidget {
     required this.label,
     required this.value,
     required this.color,
+    this.textColor,
     this.highlight = false,
   });
 
@@ -17,6 +18,9 @@ class ProbabilityBar extends StatelessWidget {
   final double value;
   final String label;
   final Color color;
+
+  /// Colour for the percentage text when [color] is too dark to read as text.
+  final Color? textColor;
   final bool highlight;
 
   @override
@@ -39,7 +43,7 @@ class ProbabilityBar extends StatelessWidget {
             Text(
               '$pct%',
               style: TextStyle(
-                color: color,
+                color: textColor ?? color,
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
               ),

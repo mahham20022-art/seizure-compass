@@ -27,6 +27,8 @@ class AppColors {
   static const brand2 = Color(0xFF6D28D9); // Deep Violet
   static const brand3 = Color(0xFF7C3AED); // vivid violet — primary interactive
   static const brandInk = Color(0xFFFFFFFF);
+  /// Violet for text on dark surfaces (≈ 9:1 on ink800); brand/brand3 are for fills.
+  static const brandText = Color(0xFFC4B5FD);
 
   static const ok = Color(0xFF10B981); // Emerald
   static const warn = Color(0xFFF59E0B); // Amber

@@ -196,34 +196,77 @@ class SeizureScoringEngine {
 
   // ---- Red flags -----------------------------------------------------------
 
-  static const _cardiacAction =
-      'High-risk feature for cardiac syncope: 12-lead ECG, cardiac monitoring, consider echocardiography '
-      'and admission before attributing the event to seizure or PNES.';
+  // Why each flag matters (ESC 2018 syncope guideline high-risk features for
+  // the cardiac flags) and what to do next.
+  static const _cardiacSteps = [
+    '12-lead ECG and continuous cardiac monitoring',
+    'Consider echocardiography',
+    'Consider admission before calling the event seizure or PNES',
+  ];
 
-  static const _neuroActions = {
-    'persistent_deficit': 'Urgent CT and CT angiography: do not call a persisting deficit Todd’s paresis before stroke and haemorrhage are excluded.',
-    'thunderclap': 'Exclude subarachnoid haemorrhage, RCVS and venous thrombosis: urgent CT, then CTA/CTV or LP as indicated.',
-    'fever_meningism': 'Treat as meningitis or encephalitis until proven otherwise: cultures, empirical antimicrobials and aciclovir without delay.',
-    'head_injury': 'CT head: intracranial haemorrhage can both cause and follow a seizure.',
-    'pregnancy': 'Think eclampsia (blood pressure, urine protein, magnesium sulfate) and cerebral venous thrombosis.',
-    'not_back_to_baseline': 'Consider non-convulsive status epilepticus (urgent EEG), as well as stroke, toxins and metabolic encephalopathy.',
+  static const _cardiacWhy = {
+    'exertional_onset': 'Loss of consciousness during exertion is a major high-risk feature for structural or arrhythmic heart disease.',
+    'supine_onset': 'Reflex syncope rarely starts lying down; onset while supine points to an arrhythmia.',
+    'palpitations': 'Sudden palpitations just before the collapse suggest a tachyarrhythmia.',
+    'chest_pain': 'New chest pain or breathlessness raises ischaemia, pulmonary embolism or aortic dissection.',
+    'fhx_sudden_death': 'Suggests an inherited arrhythmia syndrome or cardiomyopathy (long QT, Brugada, HCM).',
+    'structural_heart': 'Severe structural or coronary heart disease or heart failure is a major high-risk feature.',
+    'injury_no_prodrome': 'Abrupt loss of consciousness with no warning, causing injury, fits arrhythmic syncope.',
+  };
+
+  static const _neuro = {
+    'persistent_deficit': (
+      'Todd’s paresis fades within hours; a deficit that persists can be a stroke or haemorrhage that presented with a seizure.',
+      ['Urgent CT and CT angiography', 'Do not call it Todd’s paresis until stroke and haemorrhage are excluded'],
+    ),
+    'thunderclap': (
+      'A sudden severe headache with the event suggests subarachnoid haemorrhage, RCVS or cerebral venous thrombosis.',
+      ['Urgent CT', 'Then CTA/CTV, or LP if CT is normal, as indicated'],
+    ),
+    'fever_meningism': (
+      'Seizure with fever and neck stiffness or rash may be meningitis or encephalitis; delay worsens outcome.',
+      ['Blood cultures', 'Empirical antimicrobials and aciclovir without delay', 'LP when safe'],
+    ),
+    'head_injury': (
+      'Intracranial bleeding can cause the seizure or follow the fall; anticoagulation raises the risk.',
+      ['CT head', 'Check and reverse anticoagulation if bleeding is found'],
+    ),
+    'pregnancy': (
+      'A seizure in late pregnancy or within 6 weeks postpartum is eclampsia until proven otherwise; venous thrombosis risk is also raised.',
+      ['Blood pressure and urine protein', 'Magnesium sulfate if eclampsia is likely', 'Consider CT/MR venography'],
+    ),
+    'not_back_to_baseline': (
+      'Failure to recover within about 30 minutes suggests ongoing non-convulsive seizures or another cause.',
+      ['Urgent EEG for non-convulsive status epilepticus', 'Look for stroke, toxins and metabolic encephalopathy'],
+    ),
   };
 
   static List<RedFlag> _redFlags(AssessmentInput i) {
     final flags = <RedFlag>[];
     for (final o in cardiacFlagOptions) {
-      if (i.redFlags.contains(o.key)) flags.add(RedFlag(o.label, _cardiacAction));
+      if (i.redFlags.contains(o.key)) flags.add(RedFlag(o.label, _cardiacWhy[o.key]!, _cardiacSteps));
     }
     if (i.investigations['ecg'] == InvestigationResult.abnormal) {
-      flags.add(const RedFlag('Abnormal ECG',
-          'Look for long or short QT, Brugada pattern, pre-excitation, high-grade block or ischaemia; '
-          'arrange cardiology review and monitoring.'));
+      flags.add(const RedFlag(
+        'Abnormal ECG',
+        'An ECG consistent with arrhythmic syncope is a major high-risk feature.',
+        ['Look for long or short QT, Brugada pattern, pre-excitation, high-grade AV block or ischaemia',
+         'Cardiology review and monitoring'],
+      ));
     }
     for (final o in neuroFlagOptions) {
-      if (i.redFlags.contains(o.key)) flags.add(RedFlag(o.label, _neuroActions[o.key]!, cardiac: false));
+      if (i.redFlags.contains(o.key)) {
+        final (why, steps) = _neuro[o.key]!;
+        flags.add(RedFlag(o.label, why, steps, cardiac: false));
+      }
     }
     if (i.investigations['glucose'] == InvestigationResult.abnormal) {
-      flags.add(const RedFlag('Abnormal glucose', 'Correct glucose and reassess before interpreting the event.', cardiac: false));
+      flags.add(const RedFlag(
+        'Abnormal glucose',
+        'Hypo- or hyperglycaemia can cause both seizures and transient loss of consciousness.',
+        ['Correct glucose', 'Reassess before interpreting the event'],
+        cardiac: false,
+      ));
     }
     return flags;
   }
