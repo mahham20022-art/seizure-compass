@@ -57,6 +57,7 @@ class ResultScreen extends StatelessWidget {
               onPressed: () => _copy(context),
             ),
             TextButton(
+              style: TextButton.styleFrom(foregroundColor: AppColors.brandText),
               onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
               child: const Text('Done'),
             ),
@@ -76,7 +77,7 @@ class ResultScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('EXAMPLE · ${example!.title.toUpperCase()}',
-                              style: const TextStyle(color: AppColors.brand, fontSize: 11.5, fontWeight: FontWeight.w700, letterSpacing: 1.4)),
+                              style: const TextStyle(color: AppColors.brandText, fontSize: 11.5, fontWeight: FontWeight.w700, letterSpacing: 1.4)),
                           const SizedBox(height: 6),
                           Text(example!.summary, style: const TextStyle(color: AppColors.text2, fontSize: 13.5, height: 1.45)),
                         ],
@@ -351,10 +352,10 @@ class _RedFlagCard extends StatelessWidget {
             if (cardiac.isNotEmpty)
               _FlagItem(
                 title: cardiac.length == 1 ? cardiac.first.title : 'Cardiac high-risk features',
-                whys: [for (final f in cardiac) cardiac.length == 1 ? f.why : '${f.title}: ${f.why}'],
+                whys: [for (final f in cardiac) (cardiac.length == 1 ? null : f.title, f.why)],
                 steps: cardiac.first.steps,
               ),
-            for (final f in others) _FlagItem(title: f.title, whys: [f.why], steps: f.steps),
+            for (final f in others) _FlagItem(title: f.title, whys: [(null, f.why)], steps: f.steps),
           ],
         ),
       ),
@@ -368,7 +369,8 @@ class _RedFlagCard extends StatelessWidget {
 class _FlagItem extends StatelessWidget {
   const _FlagItem({required this.title, required this.whys, required this.steps});
   final String title;
-  final List<String> whys;
+  /// (finding, why): the finding is named when several share one item.
+  final List<(String?, String)> whys;
   final List<String> steps;
 
   static const _label = TextStyle(
@@ -401,7 +403,17 @@ class _FlagItem extends StatelessWidget {
           const SizedBox(height: 8),
           const Text('WHY IT MATTERS', style: _label),
           const SizedBox(height: 3),
-          for (final w in whys) Padding(padding: const EdgeInsets.only(bottom: 3), child: Text(w, style: _body)),
+          for (final (name, why) in whys)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text.rich(
+                TextSpan(children: [
+                  if (name != null) TextSpan(text: '$name. ', style: const TextStyle(fontWeight: FontWeight.w800)),
+                  TextSpan(text: why),
+                ]),
+                style: _body,
+              ),
+            ),
           const SizedBox(height: 6),
           const Text('NEXT', style: _label),
           const SizedBox(height: 3),
