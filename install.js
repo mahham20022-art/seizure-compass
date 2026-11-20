@@ -48,7 +48,7 @@
 .ti-scrim.on{opacity:1}
 .ti{position:fixed;z-index:2147483001;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));width:min(440px,calc(100% - 24px));transform:translate(-50%,130%);transition:transform .38s cubic-bezier(.2,.9,.25,1.1);
   background:${bg};color:${fg};border:1px solid ${ln};border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 0 1px ${ACC}22;padding:18px 18px 16px;
-  font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-height:calc(100% - 28px - env(safe-area-inset-bottom));overflow:auto;overscroll-behavior:contain;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .ti.on{transform:translate(-50%,0)}
 .ti::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:linear-gradient(135deg,${ACC},transparent 45%,${ACC}88);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .ti-top{display:flex;gap:14px;align-items:center}
@@ -71,6 +71,7 @@
 .ti-no{min-height:48px;padding:0 16px;border:1px solid ${ln};border-radius:14px;background:transparent;color:${mu};font:inherit;font-weight:700;cursor:pointer}
 .ti-arrow{position:fixed;z-index:2147483002;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);color:${ACC};animation:ti-pt 1.1s ease-in-out infinite;pointer-events:none}
 @keyframes ti-pt{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
+@media (orientation:landscape) and (max-height:500px){.ti{width:min(560px,calc(100% - 24px))}.ti-perks{margin-top:10px}.ti-icon{width:46px;height:46px;flex-basis:46px}}
 @media (prefers-reduced-motion:reduce){.ti,.ti-scrim{transition:none}.ti-icon,.ti-arrow{animation:none}}`;
     document.head.appendChild(s);
   }
