@@ -417,10 +417,14 @@ class _AppDrawer extends StatelessWidget {
                       style: TextStyle(color: AppColors.faint, fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1.4),
                     ),
                   ),
-                  _externalTile('NeuroMaze · neuroanatomy game', 'https://neuromaze.thetract.org/'),
+                  _externalTile('Najm ICUCalc · ICU calculators', 'https://icucalc.thetract.org/?utm_source=compass&utm_medium=app&utm_campaign=family', icon: 'assets/family/icucalc.png'),
+                  _externalTile('Montage · learn to read EEG', 'https://learneeg.thetract.org/?utm_source=compass&utm_medium=app&utm_campaign=family', icon: 'assets/family/montage.png'),
+                  _externalTile('NeuroMaze · neuroanatomy game', 'https://neuromaze.thetract.org/?utm_source=compass&utm_medium=app&utm_campaign=family', icon: 'assets/family/neuromaze.png'),
+                  _externalTile('Med100 · 100 days of medicine', 'https://med100.thetract.org/?utm_source=compass&utm_medium=app&utm_campaign=family', icon: 'assets/family/med100.png'),
+                  _externalTile('Fever Compass · the cause of a fever', 'https://fever.thetract.org/?utm_source=compass&utm_medium=app&utm_campaign=family', icon: 'assets/family/fever.png'),
+                  _externalTile('THERMIND · fever after brain injury', 'https://thermind.thetract.org/?utm_source=compass&utm_medium=app&utm_campaign=family', icon: 'assets/family/thermind.png'),
                   _externalTile('FEBN question bank', 'https://thetract.org/febn/mcq/'),
                   _externalTile('Epilepsy question bank', 'https://thetract.org/seizures/qbank/'),
-                  _externalTile('THERMIND · fever after brain injury', 'https://thermind.thetract.org/'),
                 ],
               ),
             ),
@@ -435,10 +439,15 @@ class _AppDrawer extends StatelessWidget {
   }
 
   /// A link to another free tool from the same publisher; opens in the same tab.
-  Widget _externalTile(String label, String url) {
+  Widget _externalTile(String label, String url, {String? icon}) {
     return ListTile(
       dense: true,
-      leading: const Icon(Icons.north_east_rounded, color: AppColors.muted, size: 18),
+      leading: icon == null
+          ? const Icon(Icons.north_east_rounded, color: AppColors.muted, size: 18)
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(7),
+              child: Image.asset(icon, width: 28, height: 28, fit: BoxFit.cover),
+            ),
       title: Text(label, style: const TextStyle(color: AppColors.text2, fontSize: 13.5)),
       onTap: () => launchUrl(Uri.parse(url), webOnlyWindowName: '_self'),
     );
