@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta name="author" content="Mohamed Najm Aldeen Alameen">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Seizure Compass — navigate, differentiate and localize seizure presentations. Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic. Naive-Bayes decision support with published weights, the Calgary score and cardiac red flags; not yet validated on patients.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Seizure Compass">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <link rel="canonical" href="https://compass.thetract.org/atlas/psychogenic-non-epileptic-seizure-pnes/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Seizure Compass — Navigate. Differentiate. Localize.">
+  <meta property="og:description" content="Free decision support for a witnessed paroxysmal event: epileptic seizure, PNES, syncope or another mimic, with a probable lobe of onset. For clinicians and trainees.">
+  <meta property="og:url" content="https://compass.thetract.org/atlas/psychogenic-non-epileptic-seizure-pnes/">
+  <meta property="og:image" content="https://compass.thetract.org/icons/og-1200x630.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Seizure Compass: seizure or mimic? Powered by The Tract.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://compass.thetract.org/icons/og-1200x630.jpg">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Seizure Compass", "url": "https://compass.thetract.org/", "applicationCategory": "MedicalApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Weighs witnessed features toward epileptic seizure, PNES, syncope or another mimic, with published weights, the Calgary Syncope–Seizure Score, cardiac red flags and lateralizing signs. Decision support for clinicians, not yet validated on patients.", "author": {"@type": "Person", "@id": "https://thetract.org/about/#editor", "name": "Mohamed Najm Aldeen Alameen", "alternateName": ["Dr Mohamed Najm", "Mohamed Najm", "Mohamed Najm Aldeen Alameen Abdalrahman"], "jobTitle": "Neurologist", "url": "https://thetract.org/about/", "identifier": {"@type": "PropertyValue", "propertyID": "ORCID", "value": "0009-0001-5506-2757"}, "sameAs": ["https://orcid.org/0009-0001-5506-2757", "https://www.linkedin.com/in/dr-mohamed-najm-aldeen-aa6452135", "https://github.com/mahham20022-art"]}, "publisher": {"@type": "Organization", "name": "The Tract · Independent Neurology Press", "url": "https://thetract.org/"}, "creator": {"@id": "https://thetract.org/about/#editor"}}</script>
+  <title>Psychogenic Non-Epileptic Seizure (PNES) — Seizure Atlas · Seizure Compass</title>
+  <link rel="manifest" href="manifest.json">
+  <script>
+    // Start the heavy downloads now, in parallel, instead of one after another when the loader asks.
+    // Mirrors flutter.js: Chromium builds take the smaller chromium/ CanvasKit, everything else the full one.
+    (function () {
+      var blink = navigator.vendor === 'Google Inc.' || navigator.userAgent.indexOf('Edg/') > -1;
+      var chromium = blink && typeof ImageDecoder !== 'undefined' && typeof Intl.v8BreakIterator !== 'undefined' && typeof Intl.Segmenter !== 'undefined';
+      var ck = 'canvaskit/' + (chromium ? 'chromium/' : '') + 'canvaskit.wasm';
+      [['main.dart.js', 'script'], [ck, 'fetch']].forEach(function (x) {
+        var l = document.createElement('link'); l.rel = 'preload'; l.href = x[0]; l.as = x[1];
+        if (x[1] === 'fetch') l.crossOrigin = 'anonymous';
+        document.head.appendChild(l);
+      });
+    })();
+  </script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #111827;
+    }
+    #splash {
+      position: fixed; inset: 0; z-index: 9999; overflow-y: auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      padding: max(28px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom));
+      background: radial-gradient(1200px 700px at 60% -10%, rgba(139,92,246,.18), transparent 60%), #111827;
+      color: #F8FAFC; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; box-sizing: border-box;
+      transition: opacity .4s ease;
+    }
+    #splash.hide { opacity: 0; pointer-events: none; }
+    #splash .word { font: 30px/1.1 Georgia, 'Times New Roman', serif; letter-spacing: .2px; }
+    #splash .word i { color: #A78BFA; }
+    #splash .load { width: min(340px, 86vw); }
+    #splash .bar { height: 4px; border-radius: 4px; background: #2a2340; overflow: hidden; }
+    #splash .bar b { display: block; height: 100%; width: 4%; border-radius: 4px; background: linear-gradient(90deg, #8B5CF6, #EC4899); transition: width .5s ease; }
+    #splash .sub { margin-top: 8px; font-size: 12.5px; color: #94A3B8; display: flex; justify-content: space-between; }
+    #splash .card {
+      width: min(400px, 92vw); box-sizing: border-box; margin-top: 10px; padding: 18px 18px 16px;
+      background: rgba(30, 27, 52, .78); border: 1px solid #3b2f62; border-radius: 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+    #splash .kick { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #A78BFA; font-weight: 700; }
+    #splash .kick span:last-child { color: #F9A8D4; letter-spacing: .06em; }
+    #splash .q { font: 19px/1.38 Georgia, 'Times New Roman', serif; margin: 12px 0 16px; min-height: 78px; }
+    #splash .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #splash button {
+      font: 600 15px system-ui, -apple-system, sans-serif; color: #F8FAFC; cursor: pointer;
+      padding: 13px 10px; border-radius: 12px; border: 1px solid #4c3e73; background: #1f1a38;
+      -webkit-tap-highlight-color: transparent; transition: transform .08s;
+    }
+    #splash button:active { transform: scale(.97); }
+    #splash button.right { background: #0f3d33; border-color: #34d399; }
+    #splash button.wrong { background: #4a1530; border-color: #f472b6; }
+    #splash .why { font-size: 14px; line-height: 1.45; color: #CBD5E1; margin-top: 12px; min-height: 0; }
+    #splash .why b { color: #F8FAFC; }
+    #splash .go { display: none; margin-top: 6px; width: min(400px, 92vw); background: linear-gradient(90deg, #8B5CF6, #EC4899); border: 0; font-size: 16px; padding: 15px; }
+    #splash.ready .go { display: block; }
+    #splash .fine { font-size: 11px; color: #64748B; text-align: center; max-width: 360px; }
+    /* ---- Opening: a compass finds north through a seizure ---- */
+    #splash { --k: 1; }
+    #splash.quick { --k: .5; }
+    .sc-stage { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .sc-mark { width: 116px; height: 116px; overflow: visible; filter: drop-shadow(0 14px 34px rgba(139,92,246,.35)); }
+    .sc-face { opacity: 0; animation: scFade calc(var(--k)*.5s) ease-out forwards; }
+    .sc-bezel { stroke-dasharray: 1; stroke-dashoffset: 1; animation: scDraw calc(var(--k)*.75s) cubic-bezier(.65,0,.35,1) calc(var(--k)*.05s) forwards; }
+    .sc-ticks { opacity: 0; animation: scFade calc(var(--k)*.4s) ease-out calc(var(--k)*.55s) forwards; }
+    .sc-eeg { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .7;
+      animation: scDraw calc(var(--k)*.95s) linear calc(var(--k)*.35s) forwards, scCalm calc(var(--k)*.6s) ease-out calc(var(--k)*1.75s) forwards; }
+    .sc-needle { transform-box: view-box; transform-origin: 60px 60px; transform: rotate(150deg); opacity: 0;
+      animation: scSwing calc(var(--k)*1.35s) cubic-bezier(.3,.7,.4,1) calc(var(--k)*.45s) forwards; }
+    .sc-pivot { opacity: 0; animation: scFade calc(var(--k)*.3s) ease-out calc(var(--k)*.5s) forwards; }
+    .sc-pulse { transform-box: view-box; transform-origin: 60px 60px; opacity: 0;
+      animation: scPulse calc(var(--k)*1.1s) ease-out calc(var(--k)*1.75s) forwards; }
+    .sc-word { font: 400 40px/1.08 Georgia, 'Times New Roman', serif; letter-spacing: .2px; white-space: nowrap; margin-top: 4px; }
+    .sc-word span { display: inline-block; opacity: 0; transform: translateY(10px); filter: blur(6px);
+      animation: scRise calc(var(--k)*.6s) cubic-bezier(.2,.8,.2,1) calc(var(--k)*(1.05s + var(--i)*.045s)) forwards; }
+    .sc-word i { font-style: italic; }
+    .sc-word i span { text-shadow: 0 0 18px rgba(236,72,153,.0); animation: scRise calc(var(--k)*.6s) cubic-bezier(.2,.8,.2,1) calc(var(--k)*(1.05s + var(--i)*.045s)) forwards, scGlow calc(var(--k)*1.2s) ease-in-out calc(var(--k)*1.9s) 1; }
+    .sc-tag { display: flex; gap: 10px; font: 700 11px/1 system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: .24em; text-transform: uppercase; color: #A78BFA; }
+    .sc-tag span { opacity: 0; animation: scFade calc(var(--k)*.5s) ease-out calc(var(--k)*(1.6s + var(--i)*.16s)) forwards; }
+    .sc-tag b { color: #4c3e73; font-weight: 700; opacity: 0; animation: scFade calc(var(--k)*.5s) ease-out calc(var(--k)*1.7s) forwards; }
+    .sc-rest { opacity: 0; transform: translateY(12px); animation: scUp calc(var(--k)*.6s) cubic-bezier(.2,.8,.2,1) calc(var(--k)*2.05s) forwards; }
+    @keyframes scFade { to { opacity: 1; } }
+    @keyframes scDraw { to { stroke-dashoffset: 0; } }
+    @keyframes scCalm { to { opacity: .22; } }
+    @keyframes scSwing {
+      0% { transform: rotate(150deg); opacity: 0; }
+      8% { opacity: 1; }
+      28% { transform: rotate(-62deg); }
+      46% { transform: rotate(34deg); }
+      61% { transform: rotate(-17deg); }
+      74% { transform: rotate(8deg); }
+      87% { transform: rotate(-3deg); }
+      100% { transform: rotate(0deg); opacity: 1; }
+    }
+    @keyframes scPulse { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(5.2); } }
+    @keyframes scRise { to { opacity: 1; transform: none; filter: none; } }
+    @keyframes scGlow { 50% { text-shadow: 0 0 18px rgba(236,72,153,.55); } }
+    @keyframes scUp { to { opacity: 1; transform: none; } }
+    @media (max-width: 380px) { .sc-word { font-size: 34px; } .sc-mark { width: 100px; height: 100px; } .sc-tag { font-size: 10px; letter-spacing: .18em; gap: 7px; } }
+    @media (max-height: 640px) { .sc-mark { width: 84px; height: 84px; } .sc-word { font-size: 32px; } }
+    @media (prefers-reduced-motion: reduce) {
+      .sc-face, .sc-bezel, .sc-ticks, .sc-eeg, .sc-needle, .sc-pivot, .sc-word span, .sc-tag span, .sc-tag b, .sc-rest { animation: none !important; opacity: 1; transform: none; filter: none; stroke-dashoffset: 0; }
+      .sc-eeg { opacity: .3; } .sc-pulse { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <noscript>
+    <h1>Seizure Compass</h1>
+    <p>Free decision support for clinicians and trainees reasoning through a witnessed paroxysmal event. It weighs witnessed features toward an epileptic seizure, psychogenic non-epileptic seizure (PNES), syncope or another mimic, shows which findings pushed the result each way, and suggests a probable lobe of onset when a focal epileptic mechanism is likely. Weights come from published studies (with an evidence grade for each) and the validated Calgary Syncope–Seizure Score is included; the combined model is not yet validated on patients and is not a diagnostic device. Part of <a href="https://thetract.org/">The Tract</a>. Created by <a href="https://thetract.org/about/" rel="author">Dr Mohamed Najm Aldeen Alameen</a> (ORCID <a href="https://orcid.org/0009-0001-5506-2757" rel="me">0009-0001-5506-2757</a>).</p>
+    <p>Worked examples: <a href="/example/convulsive-seizure">convulsion from sleep</a>, <a href="/example/pnes">prolonged event with eyes closed</a>, <a href="/example/convulsive-syncope">faint with jerks</a>, <a href="/example/cardiac-red-flag">collapse while running</a>.</p>
+    <p>Seizure Compass needs JavaScript to run.</p>
+  </noscript>
+  <div id="splash">
+    <div class="sc-stage" role="img" aria-label="Seizure Compass. Navigate, differentiate, localize.">
+      <svg class="sc-mark" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="scG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A78BFA"/><stop offset="1" stop-color="#EC4899"/></linearGradient>
+          <radialGradient id="scFaceG" cx=".5" cy=".4" r=".62"><stop offset="0" stop-color="#2b2252"/><stop offset="1" stop-color="#140f26"/></radialGradient>
+          <clipPath id="scClip"><circle cx="60" cy="60" r="45"/></clipPath>
+        </defs>
+        <circle class="sc-face" cx="60" cy="60" r="52" fill="url(#scFaceG)"/>
+        <circle class="sc-bezel" cx="60" cy="60" r="52" fill="none" stroke="url(#scG)" stroke-width="2.4" pathLength="1" transform="rotate(-90 60 60)"/>
+        <g class="sc-ticks" stroke-linecap="round">
+          <path d="M60 12v8M60 100v8M12 60h8M100 60h8" stroke="#C4B5FD" stroke-width="2.2"/>
+          <path d="M26 26l3.5 3.5M94 26l-3.5 3.5M26 94l3.5-3.5M94 94l-3.5-3.5" stroke="#6D5BA8" stroke-width="1.6"/>
+        </g>
+        <g clip-path="url(#scClip)"><path class="sc-eeg" pathLength="1" fill="none" stroke="url(#scG)" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"
+          d="M10 64 L26 64 C28 64 29 61.5 31 61.5 C33 61.5 34 64 36 64 L40 64 L43 47 L46 79 L49 61 C51 55 53 72 55 66 L58 41 L61.5 84 L64.5 58 C66.5 51 68.5 74 70.5 66 L73 45 L76.5 78 L79 62 C81 58 83 66 85 64 L110 64"/></g>
+        <circle class="sc-pulse" cx="60" cy="60" r="9" fill="none" stroke="#F472B6" stroke-width="1.4"/>
+        <g class="sc-needle">
+          <path d="M60 20 L66.5 60 L53.5 60 Z" fill="url(#scG)"/>
+          <path d="M60 100 L66.5 60 L53.5 60 Z" fill="#3f3a5c"/>
+        </g>
+        <circle class="sc-pivot" cx="60" cy="60" r="4.2" fill="#F8FAFC"/>
+      </svg>
+      <div class="sc-word" aria-hidden="true"><span style="--i:0">S</span><span style="--i:1">e</span><span style="--i:2">i</span><span style="--i:3">z</span><span style="--i:4">u</span><span style="--i:5">r</span><span style="--i:6">e</span> <i><span style="--i:8;color:#A78BFA">C</span><span style="--i:9;color:#B488F5">o</span><span style="--i:10;color:#C285EE">m</span><span style="--i:11;color:#D07FE2">p</span><span style="--i:12;color:#DC79D2">a</span><span style="--i:13;color:#E574BF">s</span><span style="--i:14;color:#EC4899">s</span></i></div>
+      <div class="sc-tag" aria-hidden="true"><span style="--i:0">Navigate</span><b>·</b><span style="--i:1">Differentiate</span><b>·</b><span style="--i:2">Localize</span></div>
+    </div>
+    <div class="load sc-rest"><div class="bar"><b id="sp-bar"></b></div><div class="sub"><span id="sp-stage">Downloading the engine…</span><span id="sp-pct"></span></div></div>
+    <div class="card sc-rest" id="sp-card">
+      <div class="kick"><span>While you wait · seizure or mimic?</span><span id="sp-score"></span></div>
+      <div class="q" id="sp-q"></div>
+      <div class="opts"><button type="button" data-a="E">Epileptic</button><button type="button" data-a="M">Mimic</button></div>
+      <div class="why" id="sp-why"></div>
+    </div>
+    <button type="button" class="go" id="sp-go">Open the Compass →</button>
+    <div class="fine sc-rest">Teaching items, not a diagnosis. The first visit downloads the app once; later visits open faster.</div>
+    <div class="sc-rest" style="margin-top:6px"><a class="tract-pb" href="https://thetract.org/?utm_source=seizure-compass&amp;utm_medium=app&amp;utm_campaign=powered-by" target="_blank" rel="noopener" aria-label="Powered by The Tract" style="display:inline-flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;font:600 10.5px/1.2 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.16em;text-transform:uppercase;opacity:.85;color:#CBD5E1"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" style="display:block;border-radius:7px;box-shadow:0 0 0 1px rgba(255,255,255,.22)"><rect width="100" height="100" fill="#14212E"/><path d="M18 27H82M44 27V64a14 14 0 0 0 14 14H70" stroke="#F5F6F3" stroke-width="7" fill="none"/><circle cx="75" cy="78" r="5.5" fill="#B66C4E"/></svg><span>Powered by The Tract</span></a></div>
+  </div>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script>
+  (function () {
+    var Q = [
+      ['Eyes kept firmly shut throughout the event; they resist being opened.', 'M', 'Eye closure during the event strongly favours a functional (psychogenic) seizure. In epileptic seizures the eyes are usually open.'],
+      ['Bitten tongue, on the side, after a convulsion from sleep.', 'E', 'A lateral tongue bite is one of the most specific bedside signs of a generalised tonic–clonic seizure.'],
+      ['Stood up in a hot room, went pale, fell, a few jerks for under 15 seconds, then alert at once.', 'M', 'Convulsive syncope. Brief irregular jerks are common in fainting, and recovery is quick with little confusion.'],
+      ['Crying during the episode.', 'M', 'Ictal crying is a well-described sign of functional (psychogenic) seizures.'],
+      ['A rising feeling in the stomach, then lip-smacking and fumbling with the hands, with no memory of it.', 'E', 'An epigastric aura followed by oral and manual automatisms is a classic temporal-lobe seizure.'],
+      ['Several brief, stereotyped episodes a night from sleep, with thrashing and pelvic thrusting.', 'E', 'Trap: pelvic thrusting also occurs in frontal-lobe (hypermotor) seizures. Brief, stereotyped and clustered from sleep points to epilepsy.'],
+      ['Side-to-side head shaking that waxes and wanes for ten minutes.', 'M', 'Long, fluctuating events with side-to-side head movements favour functional seizures.'],
+      ['Collapsed while running; brief jerking; known family history of sudden death.', 'M', 'Mimic, and a red flag: exertional collapse needs an ECG and a cardiac work-up before anyone says epilepsy.'],
+      ['Both arms and legs shook for two minutes, yet the person recalls every moment.', 'M', 'Bilateral convulsive movements with preserved awareness and recall argue for a functional seizure (frontal seizures are the rare exception).'],
+      ['Head forced to one side, then generalised stiffening and jerking, then confused for 20 minutes.', 'E', 'Forced head version followed by a generalised convulsion and prolonged confusion is a focal-to-bilateral tonic–clonic seizure.'],
+      ['Grey and limp after a blood test, a few twitches, fully back within seconds.', 'M', 'Reflex (vasovagal) syncope, triggered by pain or the sight of blood.'],
+      ['Wakes from a nap, stares, and does not respond for a minute, then is drowsy for half an hour.', 'E', 'Unresponsiveness with prolonged post-event drowsiness favours a focal impaired-awareness seizure over a faint.']
+    ];
+    for (var i = Q.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = Q[i]; Q[i] = Q[j]; Q[j] = t; }
+    var $ = function (id) { return document.getElementById(id); };
+    var splash = $('splash'), n = 0, right = 0, done = 0, locked = false, played = false, ready = false;
+    var t0 = Date.now(), seenIntro = false;
+    try { seenIntro = localStorage.getItem('sc_intro_seen') === '1'; } catch (e) {}
+    if (seenIntro) splash.classList.add('quick');
+    var MIN = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : (seenIntro ? 1500 : 2800);
+    function show() {
+      var q = Q[n % Q.length]; locked = false;
+      $('sp-q').textContent = q[0]; $('sp-why').innerHTML = '';
+      Array.prototype.forEach.call(splash.querySelectorAll('.opts button'), function (b) { b.className = ''; });
+    }
+    splash.querySelector('.opts').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b || locked) return;
+      locked = true; played = true; var q = Q[n % Q.length], ok = b.dataset.a === q[1];
+      done++; if (ok) right++;
+      b.className = ok ? 'right' : 'wrong';
+      if (!ok) splash.querySelector('.opts button[data-a="' + q[1] + '"]').className = 'right';
+      $('sp-why').innerHTML = '<b>' + (ok ? 'Right. ' : 'Not quite. ') + '</b>' + q[2];
+      $('sp-score').textContent = right + ' / ' + done;
+      n++; setTimeout(show, ok ? 3200 : 4600);
+    });
+    show();
+    // progress: real milestones (resource timing) plus a slow creep in between
+    var pct = 4, floor = 4, cap = 55;
+    function set(p, label) { pct = Math.max(pct, p); $('sp-bar').style.width = pct + '%'; $('sp-pct').textContent = Math.round(pct) + '%'; if (label) $('sp-stage').textContent = label; }
+    var got = {};
+    function seen() {
+      (performance.getEntriesByType ? performance.getEntriesByType('resource') : []).forEach(function (r) {
+        if (/main\.dart\.js/.test(r.name) && r.responseEnd) got.js = 1;
+        if (/canvaskit\.wasm/.test(r.name) && r.responseEnd) got.wasm = 1;
+      });
+      var k = (got.js ? 1 : 0) + (got.wasm ? 1 : 0);
+      if (k === 1) { floor = 45; cap = 78; }
+      if (k === 2) { floor = 80; cap = 95; set(80, 'Starting the engine…'); }
+    }
+    var tick = setInterval(function () { if (ready) return; seen(); set(Math.min(cap, Math.max(floor, pct + (cap - pct) * 0.04))); }, 250);
+    function close() {
+      var wait = MIN - (Date.now() - t0);
+      if (wait > 0) { setTimeout(close, wait); return; }
+      try { localStorage.setItem('sc_intro_seen', '1'); } catch (e) {}
+      splash.classList.add('hide'); setTimeout(function () { splash.remove(); }, 400);
+    }
+    $('sp-go').addEventListener('click', close);
+    window.addEventListener('flutter-first-frame', function () {
+      ready = true; clearInterval(tick); set(100, 'Ready');
+      // if they are mid-question, let them finish and open when they choose
+      if (played) { splash.classList.add('ready'); setTimeout(close, 15000); } else close();
+    });
+  })();
+  </script>
+  <script>
+    window.goatcounter = { path: function (p) { return 'compass' + (p === '/' ? '/' : p); } };
+  </script>
+  <script data-goatcounter="https://naaajm.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  <script>
+    // The app is one page; count each screen the reader opens (path only, no cookies).
+    (function () {
+      var last = location.pathname;
+      function hit() {
+        if (location.pathname === last) return;
+        last = location.pathname;
+        var gc = window.goatcounter;
+        if (gc && gc.count) gc.count({ path: 'compass' + location.pathname });
+      }
+      ['pushState', 'replaceState'].forEach(function (k) {
+        var orig = history[k];
+        history[k] = function () { var r = orig.apply(this, arguments); setTimeout(hit, 0); return r; };
+      });
+      window.addEventListener('popstate', hit);
+    })();
+  </script>
+
+  <script src="flutter_bootstrap.js" async></script>
+<script src="install.js?v=2" defer data-name="Seizure Compass" data-accent="#7C3AED" data-on="#ffffff" data-icon="icons/Icon-192.png" data-offline="0" data-theme="dark"></script>
+</body>
+</html>
